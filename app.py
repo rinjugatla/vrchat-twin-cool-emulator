@@ -192,10 +192,10 @@ def display_card_selection_table(
     # ヘッダー行を表示
     header_cols = st.columns([2] + [1]*10)
     with header_cols[0]:
-        st.markdown('<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f0f0f0; border:1px solid #ddd;">スート</div>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f0f0f0; border:1px solid #ddd; color:#000000;">スート</div>', unsafe_allow_html=True)
     for i, value in enumerate(range(1, 11), start=1):
         with header_cols[i]:
-            st.markdown(f'<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f0f0f0; border:1px solid #ddd;">{value}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f0f0f0; border:1px solid #ddd; color:#000000;">{value}</div>', unsafe_allow_html=True)
     
     # 各スートの行
     suits = list(Suit)
@@ -205,7 +205,7 @@ def display_card_selection_table(
         
         # スート列
         with cols[0]:
-            st.markdown(f'<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f8f9fa; border:1px solid #ddd; height:50px; display:flex; align-items:center; justify-content:center;">{emoji} {suit.name}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f8f9fa; border:1px solid #ddd; height:50px; display:flex; align-items:center; justify-content:center; color:#000000;">{emoji} {suit.name}</div>', unsafe_allow_html=True)
         
         # 数値列（ボタン）
         for i, value in enumerate(range(1, 11), start=1):
