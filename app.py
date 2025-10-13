@@ -144,16 +144,16 @@ def display_deck_status(state: GameState, recommended_card: Optional[Card] = Non
     
     # ヘッダー行
     html += '<tr style="background-color: #f0f0f0;">'
-    html += '<th style="border: 1px solid #ddd; padding: 8px;">スート</th>'
+    html += '<th style="border: 1px solid #ddd; padding: 8px; color: #000000; font-weight: bold;">スート</th>'
     for value in range(1, 11):
-        html += f'<th style="border: 1px solid #ddd; padding: 8px;">{value}</th>'
+        html += f'<th style="border: 1px solid #ddd; padding: 8px; color: #000000; font-weight: bold;">{value}</th>'
     html += '</tr>'
     
     # 各スートの行
     for suit in suits:
         emoji = get_suit_emoji(suit)
         html += '<tr>'
-        html += f'<td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">{emoji} {suit.name}</td>'
+        html += f'<td style="border: 1px solid #ddd; padding: 8px; font-weight: bold; background-color: #f8f9fa; color: #000000;">{emoji} {suit.name}</td>'
         
         for value in range(1, 11):
             card = Card(suit, value)
@@ -167,16 +167,16 @@ def display_deck_status(state: GameState, recommended_card: Optional[Card] = Non
                 cell_style += ' background-color: #e0e0e0;'
             elif recommended_card and card == recommended_card:
                 # 推奨カード（赤色）
-                cell_style += ' background-color: #ff6b6b; color: white; font-weight: bold;'
+                cell_style += ' background-color: #ff4444; color: #ffffff; font-weight: bold;'
             elif card in hand_cards:
                 # 手札のカード（黄色）
-                cell_style += ' background-color: #ffd93d; font-weight: bold;'
+                cell_style += ' background-color: #ffeb3b; color: #000000; font-weight: bold;'
             elif card in played_cards:
                 # 使用済みカード（薄く表示）
-                cell_style += ' color: #cccccc;'
+                cell_style += ' color: #999999; background-color: #ffffff;'
             elif card in remaining_cards:
                 # 山札に残っているカード
-                cell_style += ' background-color: #f8f9fa;'
+                cell_style += ' background-color: #ffffff; color: #000000;'
             
             html += f'<td style="{cell_style}">{cell_content}</td>'
         
