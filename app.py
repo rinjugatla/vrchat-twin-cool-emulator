@@ -20,16 +20,20 @@ def initialize_session_state():
         st.session_state.turn = 0
         st.session_state.seed = seed
         st.session_state.recommended_move = None  # 推奨手を保存
+        st.session_state.excluded_cards = []  # 除外カード選択用
+        st.session_state.show_exclude_dialog = False  # 除外カード選択ダイアログ表示フラグ
 
 
-def reset_game():
+def reset_game(excluded_cards=None):
     """ゲームをリセット"""
     seed = random.randint(0, 100000)
-    st.session_state.game_state = GameState(seed=seed)
+    st.session_state.game_state = GameState(seed=seed, excluded_cards=excluded_cards)
     st.session_state.history = []
     st.session_state.turn = 0
     st.session_state.seed = seed
     st.session_state.recommended_move = None  # 推奨手をクリア
+    st.session_state.excluded_cards = []  # 除外カード選択をクリア
+    st.session_state.show_exclude_dialog = False  # ダイアログを閉じる
 
 
 def display_game_state(state: GameState):
@@ -235,8 +239,13 @@ def main():
         st.markdown("---")
         
         # リセットボタン
-        if st.button("🔄 新しいゲームを開始", use_container_width=True):
+        if st.button("🔄 新しいゲームを開始（ランダム）", use_container_width=True):
             reset_game()
+            st.rerun()
+        
+        # 除外カード指定ボタン
+        if st.button("🎯 除外カードを指定して開始", use_container_width=True):
+            st.session_state.show_exclude_dialog = True
             st.rerun()
         
         st.markdown("---")
@@ -268,6 +277,45 @@ def main():
     
     # メインコンテンツ
     state = st.session_state.game_state
+    
+    # 除外カード選択ダイアログ
+    if st.session_state.show_exclude_dialog:
+        st.subheader("🎯 除外するカードを10枚選択")
+        
+        st.info("山札から除外する10枚のカードを選択してください。チェックボックスで選択します。")
+        
+        # 全カードを8スート×10数値で表示
+        selected_cards = []
+        
+        for suit in Suit:
+            st.markdown(f"### {get_suit_emoji(suit)} {suit.name}")
+            cols = st.columns(10)
+            for i, value in enumerate(range(1, 11)):
+                with cols[i]:
+                    card = Card(suit, value)
+                    if st.checkbox(f"{value}", key=f"exclude_{suit.name}_{value}"):
+                        selected_cards.append(card)
+        
+        st.markdown("---")
+        st.markdown(f"**選択中: {len(selected_cards)}/10枚**")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if st.button("✅ この設定でゲーム開始", use_container_width=True, type="primary", disabled=(len(selected_cards) != 10)):
+                if len(selected_cards) == 10:
+                    reset_game(excluded_cards=selected_cards)
+                    st.success("ゲームを開始しました！")
+                    st.rerun()
+                else:
+                    st.error(f"10枚選択してください（現在: {len(selected_cards)}枚）")
+        
+        with col2:
+            if st.button("❌ キャンセル", use_container_width=True):
+                st.session_state.show_exclude_dialog = False
+                st.rerun()
+        
+        st.markdown("---")
     
     # ゲーム状態表示
     display_game_state(state)

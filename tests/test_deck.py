@@ -76,6 +76,46 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(len(remaining2), 69)
         self.assertEqual(len(remaining), original_count)
     
+    def test_deck_with_specific_excluded_cards(self):
+        """特定のカードを除外してデッキを初期化するテスト"""
+        # 除外するカードを指定（A1-A10の10枚）
+        excluded = [Card(Suit.SUIT_A, i) for i in range(1, 11)]
+        deck = Deck(seed=42, excluded_cards=excluded)
+        
+        # 山札は70枚
+        self.assertEqual(deck.remaining_count(), 70)
+        
+        # 除外されたカードを確認
+        excluded_from_deck = deck.get_excluded_cards()
+        self.assertEqual(len(excluded_from_deck), 10)
+        for card in excluded:
+            self.assertIn(card, excluded_from_deck)
+        
+        # 山札にA1-A10が含まれないことを確認
+        remaining = deck.get_remaining_cards()
+        for card in excluded:
+            self.assertNotIn(card, remaining)
+    
+    def test_deck_with_invalid_excluded_cards_count(self):
+        """除外カードが10枚でない場合のエラーテスト"""
+        # 9枚のみ指定
+        excluded = [Card(Suit.SUIT_A, i) for i in range(1, 10)]
+        
+        with self.assertRaises(ValueError) as context:
+            Deck(excluded_cards=excluded)
+        
+        self.assertIn("10枚である必要があります", str(context.exception))
+    
+    def test_deck_with_duplicate_excluded_cards(self):
+        """重複したカードを除外しようとした場合のテスト"""
+        # 重複したカードを含むリスト
+        excluded = [Card(Suit.SUIT_A, i) for i in range(1, 10)]
+        excluded.append(Card(Suit.SUIT_A, 1))  # 重複
+        
+        # 重複がある場合、実質的に9枚しか除外されないため71枚残る
+        deck = Deck(excluded_cards=excluded)
+        self.assertEqual(deck.remaining_count(), 71)
+    
     def test_deck_is_empty(self):
         """デッキの空判定テスト"""
         deck = Deck(seed=42)

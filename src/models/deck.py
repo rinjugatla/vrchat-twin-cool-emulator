@@ -13,38 +13,58 @@ class Deck:
     デッキ（山札）を表すクラス
     
     初期化時に全80枚のカードを生成し、ランダムに10枚を除外して70枚にする
+    または、任意の10枚のカードを除外することもできる
     """
     
-    def __init__(self, seed: Optional[int] = None):
+    def __init__(self, seed: Optional[int] = None, excluded_cards: Optional[List[Card]] = None):
         """
         デッキの初期化
         
         Args:
             seed: 乱数シード（テスト用、省略可）
+            excluded_cards: 除外するカードのリスト（10枚）。Noneの場合はランダムに10枚除外
         """
         if seed is not None:
             random.seed(seed)
         
         self._cards: List[Card] = []
         self._excluded_cards: List[Card] = []  # 除外されたカード
-        self._initialize_deck()
+        self._initialize_deck(excluded_cards)
     
-    def _initialize_deck(self):
-        """全80枚のカードを生成し、10枚を除外して70枚にする"""
+    def _initialize_deck(self, excluded_cards: Optional[List[Card]] = None):
+        """
+        全80枚のカードを生成し、10枚を除外して70枚にする
+        
+        Args:
+            excluded_cards: 除外するカードのリスト（10枚）。Noneの場合はランダムに10枚除外
+        """
         # 全80枚のカードを生成
         all_cards = []
         for suit in Suit:
             for value in range(1, 11):
                 all_cards.append(Card(suit, value))
         
+        if excluded_cards is not None:
+            # 指定されたカードを除外
+            if len(excluded_cards) != 10:
+                raise ValueError(f"除外するカードは10枚である必要があります: {len(excluded_cards)}枚")
+            
+            # 除外カードが全80枚に含まれているか確認
+            for card in excluded_cards:
+                if card not in all_cards:
+                    raise ValueError(f"除外カードが無効です: {card}")
+            
+            self._excluded_cards = excluded_cards.copy()
+            
+            # 除外カードを除いた70枚を山札とする
+            self._cards = [card for card in all_cards if card not in excluded_cards]
+        else:
+            # ランダムに10枚を除外
+            random.shuffle(all_cards)
+            self._excluded_cards = all_cards[:10]
+            self._cards = all_cards[10:]
+        
         # シャッフル
-        random.shuffle(all_cards)
-        
-        # 最初の10枚を除外して、残りの70枚を山札とする
-        self._excluded_cards = all_cards[:10]  # 除外されたカードを保存
-        self._cards = all_cards[10:]
-        
-        # さらにシャッフル
         random.shuffle(self._cards)
     
     def draw(self) -> Optional[Card]:

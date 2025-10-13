@@ -23,14 +23,15 @@ class GameState:
         turn_count: ターン数
     """
     
-    def __init__(self, seed: Optional[int] = None):
+    def __init__(self, seed: Optional[int] = None, excluded_cards: Optional[List[Card]] = None):
         """
         ゲーム状態の初期化
         
         Args:
             seed: 乱数シード（テスト用、省略可）
+            excluded_cards: 除外するカードのリスト（10枚）。Noneの場合はランダムに10枚除外
         """
-        self.deck = Deck(seed=seed)
+        self.deck = Deck(seed=seed, excluded_cards=excluded_cards)
         self.hand = Hand()
         self.field = Field()
         self.total_points = 0
