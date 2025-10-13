@@ -62,6 +62,19 @@ class Field:
         slot = self.get_slot(slot_number)
         return slot.get_top_card()
     
+    def get_slot_count(self, slot_number: int) -> int:
+        """
+        指定したスロットのカード枚数を取得
+        
+        Args:
+            slot_number: スロット番号（1 or 2）
+            
+        Returns:
+            スロットのカード枚数
+        """
+        slot = self.get_slot(slot_number)
+        return slot.count()
+    
     def total_cards_count(self) -> int:
         """
         場に出された全カードの枚数を返す

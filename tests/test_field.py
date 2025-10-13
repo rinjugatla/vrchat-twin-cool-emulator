@@ -121,6 +121,25 @@ class TestField(unittest.TestCase):
         self.assertIsInstance(slot1, FieldSlot)
         self.assertIsInstance(slot2, FieldSlot)
         self.assertIsNot(slot1, slot2)
+    
+    def test_field_get_slot_count(self):
+        """スロットのカード枚数取得のテスト"""
+        field = Field()
+        
+        # 初期状態
+        self.assertEqual(field.get_slot_count(1), 0)
+        self.assertEqual(field.get_slot_count(2), 0)
+        
+        # スロット1にカードを追加
+        field.place_card(1, Card(Suit.SUIT_A, 1))
+        field.place_card(1, Card(Suit.SUIT_A, 2))
+        self.assertEqual(field.get_slot_count(1), 2)
+        self.assertEqual(field.get_slot_count(2), 0)
+        
+        # スロット2にカードを追加
+        field.place_card(2, Card(Suit.SUIT_B, 3))
+        self.assertEqual(field.get_slot_count(1), 2)
+        self.assertEqual(field.get_slot_count(2), 1)
 
 
 if __name__ == '__main__':

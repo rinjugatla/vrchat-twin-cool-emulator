@@ -91,7 +91,17 @@ twin-cool-emulator/
 - [x] **ステップ 1**: 開発環境の構築 ✅
 - [x] **ステップ 2**: ゲームロジックの実装 ✅
 - [x] **ステップ 3**: MCTS最適解探索の実装 ✅
-- [ ] **ステップ 4**: WebUIアプリケーションの実装 �
+- [x] **ステップ 4**: WebUIアプリケーションの実装 ✅
+
+## 🎮 WebUIの起動
+
+```powershell
+uv run streamlit run app.py
+```
+
+ブラウザで http://localhost:8501 にアクセスして、インタラクティブにゲームをプレイできます！
+
+詳細は [WEBUI_GUIDE.md](WEBUI_GUIDE.md) を参照してください。
 
 ## パフォーマンス
 
