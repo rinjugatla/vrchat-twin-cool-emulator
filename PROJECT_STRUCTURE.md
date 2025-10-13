@@ -44,9 +44,31 @@ twin-cool-emulator/
 │   │   ├── __init__.py
 │   │   ├── move_validator.py     # MoveValidator
 │   │   ├── game_state.py         # GameState
-│   │   └── game.py               # Game
-│   ├── views/                     # 📋 ビュー層（今後実装）
-│   │   └── __init__.py
+│   │   ├── game.py               # Game
+│   │   ├── evaluator.py          # Evaluator
+│   │   ├── mcts_node.py          # MCTSNode
+│   │   ├── mcts_engine.py        # MCTSEngine
+│   │   └── mcts_strategy.py      # MCTSStrategy
+│   ├── views/                     # ✅ ビュー層（リファクタリング完了）
+│   │   ├── __init__.py
+│   │   ├── components/           # UIコンポーネント
+│   │   │   ├── __init__.py
+│   │   │   ├── game_state_display.py     # ゲーム状態表示
+│   │   │   ├── hand_display.py           # 手札表示
+│   │   │   ├── field_display.py          # 場表示
+│   │   │   ├── deck_status_display.py    # 山札状況表示
+│   │   │   └── card_selection_table.py   # カード選択テーブル
+│   │   ├── dialogs/              # ダイアログ
+│   │   │   ├── __init__.py
+│   │   │   ├── exclude_card_dialog.py    # 除外カード選択
+│   │   │   └── hand_selection_dialog.py  # 初期手札選択
+│   │   ├── styles/               # スタイル定義
+│   │   │   ├── __init__.py
+│   │   │   └── card_table_styles.py      # CSSスタイル
+│   │   └── utils/                # ユーティリティ
+│   │       ├── __init__.py
+│   │       ├── ui_helpers.py             # UI補助関数
+│   │       └── session_manager.py        # セッション管理
 │   └── __init__.py
 ├── tests/                         # ✅ テストコード
 │   ├── __init__.py
@@ -81,7 +103,8 @@ twin-cool-emulator/
 
 **ステップ1 テスト数**: 41テスト
 **ステップ2 テスト数**: 30テスト
-**総テスト数**: 71テスト / 全て通過 ✅
+**WebUIリファクタリングテスト**: 11テスト
+**総テスト数**: 82テスト / 全て通過 ✅
 
 #### ✅ 完了 (ステップ2)
 
@@ -95,18 +118,22 @@ twin-cool-emulator/
 | `MCTSEngine` | `src/controllers/mcts_engine.py` | MCTS探索エンジン | 12 |
 | `MCTSStrategy` | `src/controllers/mcts_strategy.py` | MCTS戦略API | 16 |
 
-#### � WebUIアプリケーション (ステップ4) ✅
+#### 🎨 WebUIアプリケーション (ステップ4) ✅
 
-| ファイル | 説明 | 主要機能 |
-|---------|------|---------|
-| `app.py` | Streamlit WebUIアプリケーション | ゲーム状態表示、最適解分析、山札状況表示 |
-| `WEBUI_GUIDE.md` | WebUI使用方法ドキュメント | ユーザーガイド |
+| ファイル | 説明 | 行数 |
+|---------|------|------|
+| `app.py` | Streamlit WebUIアプリケーション（リファクタリング後） | 244行 |
+| `app_old.py` | 元のapp.py（バックアップ） | 661行 |
+| `WEBUI_GUIDE.md` | WebUI使用方法ドキュメント | - |
 
 **WebUI主要機能**:
+
 - ゲーム状態の視覚化（スート絵文字付き）
 - 📊 山札状況表示（8スート×10数値の表形式）
 - リアルタイムMCTS最適解分析
 - 履歴管理（スート絵文字付き）
+- 除外カード指定機能
+- 初期手札指定機能
 
 #### 📋 全ステップ完了 ✅
 
@@ -114,6 +141,21 @@ twin-cool-emulator/
 - ✅ ステップ2: ゲームロジック実装
 - ✅ ステップ3: モンテカルロ木探索（MCTS）実装
 - ✅ ステップ4: Streamlit WebUI実装
+- ✅ ステップ5: WebUIのリファクタリング（MVCモデル適用）
+
+#### ✅ WebUIリファクタリング完了
+
+**リファクタリング成果**:
+- **コードサイズ削減**: `app.py` 661行 → 244行（**-63%削減**）
+- **モジュール分割**: 1ファイル → 11ファイル（components, dialogs, styles, utils）
+- **保守性向上**: 各機能が独立したファイルに分離
+- **テスト保証**: 11/11テスト成功（リファクタリング前後で同じ動作を保証）
+
+**新しいビュー層の構造**:
+- `components/`: 再利用可能なUIコンポーネント（5ファイル）
+- `dialogs/`: ダイアログ画面（2ファイル）
+- `styles/`: CSSスタイル定義（1ファイル）
+- `utils/`: ユーティリティ関数（2ファイル）
 
 ### 🔧 コーディング規約の遵守状況
 

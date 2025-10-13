@@ -24,10 +24,16 @@ uv sync
 
 ### 2. テストの実行
 
-全テスト（114個）を実行：
+全テスト（126個）を実行：
 
 ```powershell
 uv run python -m unittest discover -s tests -p "test_*.py" -v
+```
+
+WebUIリファクタリング前後の動作保証テスト：
+
+```powershell
+uv run python tests/test_app_behavior.py
 ```
 
 ### 3. ゲームシミュレーションの実行
@@ -69,8 +75,12 @@ twin-cool-emulator/
 │   │   ├── mcts_node.py          # MCTSNodeクラス（MCTS木）
 │   │   ├── mcts_engine.py        # MCTSEngineクラス（探索）
 │   │   └── mcts_strategy.py      # MCTSStrategyクラス（戦略API）
-│   ├── views/                     # ユーザーインターフェース層（MVC）
-│   │   └── __init__.py
+│   ├── views/                     # ユーザーインターフェース層（MVC）✅
+│   │   ├── __init__.py
+│   │   ├── components/           # UIコンポーネント
+│   │   ├── dialogs/              # ダイアログ
+│   │   ├── styles/               # スタイル定義
+│   │   └── utils/                # ユーティリティ
 │   └── __init__.py
 ├── tests/                         # テストコード
 │   ├── __init__.py
@@ -92,6 +102,7 @@ twin-cool-emulator/
 - [x] **ステップ 2**: ゲームロジックの実装 ✅
 - [x] **ステップ 3**: MCTS最適解探索の実装 ✅
 - [x] **ステップ 4**: WebUIアプリケーションの実装 ✅
+- [x] **ステップ 5**: WebUIリファクタリング ✅（661行→244行、-63%削減）
 
 ## 🎮 WebUIの起動
 
