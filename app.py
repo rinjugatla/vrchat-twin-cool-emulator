@@ -52,6 +52,17 @@ def display_game_state(state: GameState):
         st.metric("総合スコア", score)
 
 
+def get_suit_emoji(suit: Suit) -> str:
+    """スートに対応する絵文字を取得"""
+    suit_colors = {
+        Suit.SUIT_A: "🔴", Suit.SUIT_B: "🔵", 
+        Suit.SUIT_C: "🟢", Suit.SUIT_D: "🟡",
+        Suit.SUIT_E: "⚪", Suit.SUIT_F: "🩵",
+        Suit.SUIT_G: "🟣", Suit.SUIT_H: "🩷"
+    }
+    return suit_colors.get(suit, "⬜")
+
+
 def display_hand(state: GameState):
     """手札を表示"""
     st.subheader("🎴 手札")
@@ -67,14 +78,7 @@ def display_hand(state: GameState):
     cols = st.columns(min(len(cards), 5))
     for i, card in enumerate(cards):
         with cols[i % 5]:
-            # カードの色分け（スートごと）
-            suit_colors = {
-                Suit.SUIT_A: "🔴", Suit.SUIT_B: "🔵", 
-                Suit.SUIT_C: "🟢", Suit.SUIT_D: "🟡",
-                Suit.SUIT_E: "⚪", Suit.SUIT_F: "🩵",
-                Suit.SUIT_G: "🟣", Suit.SUIT_H: "🩷"
-            }
-            color = suit_colors.get(card.suit, "⬜")
+            color = get_suit_emoji(card.suit)
             st.markdown(f"### {color} {card}")
 
 
@@ -90,7 +94,8 @@ def display_field(state: GameState):
         st.markdown("#### スロット 1")
         slot1_top = field.get_top_card(1)
         if slot1_top:
-            st.success(f"トップカード: {slot1_top}")
+            emoji = get_suit_emoji(slot1_top.suit)
+            st.success(f"トップカード: {emoji} {slot1_top}")
             st.caption(f"枚数: {field.get_slot_count(1)}枚")
         else:
             st.info("空（任意のカードを出せます）")
@@ -99,7 +104,8 @@ def display_field(state: GameState):
         st.markdown("#### スロット 2")
         slot2_top = field.get_top_card(2)
         if slot2_top:
-            st.success(f"トップカード: {slot2_top}")
+            emoji = get_suit_emoji(slot2_top.suit)
+            st.success(f"トップカード: {emoji} {slot2_top}")
             st.caption(f"枚数: {field.get_slot_count(2)}枚")
         else:
             st.info("空（任意のカードを出せます）")
@@ -248,6 +254,7 @@ def main():
                         st.session_state.history.append({
                             'turn': st.session_state.turn,
                             'card': str(card),
+                            'suit': card.suit,  # スート情報も保存
                             'slot': slot
                         })
                         st.session_state.recommended_move = None  # 推奨手をクリア
@@ -269,10 +276,19 @@ def main():
         
         with st.expander(f"履歴を表示 ({len(st.session_state.history)}手)"):
             for record in reversed(st.session_state.history[-10:]):
-                st.caption(
-                    f"ターン {record['turn']}: "
-                    f"{record['card']} → スロット{record['slot']}"
-                )
+                # スート情報がある場合は絵文字を表示
+                if 'suit' in record:
+                    emoji = get_suit_emoji(record['suit'])
+                    st.caption(
+                        f"ターン {record['turn']}: "
+                        f"{emoji} {record['card']} → スロット{record['slot']}"
+                    )
+                else:
+                    # 後方互換性のため、スート情報がない場合は絵文字なしで表示
+                    st.caption(
+                        f"ターン {record['turn']}: "
+                        f"{record['card']} → スロット{record['slot']}"
+                    )
 
 
 if __name__ == "__main__":
