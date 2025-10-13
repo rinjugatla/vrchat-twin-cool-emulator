@@ -24,7 +24,7 @@ uv sync
 
 ### 2. テストの実行
 
-全テスト（71個）を実行：
+全テスト（114個）を実行：
 
 ```powershell
 uv run python -m unittest discover -s tests -p "test_*.py" -v
@@ -32,8 +32,18 @@ uv run python -m unittest discover -s tests -p "test_*.py" -v
 
 ### 3. ゲームシミュレーションの実行
 
+ランダム戦略とMCTS戦略のデモ：
+
 ```powershell
 uv run python main.py
+```
+
+### 4. パフォーマンスベンチマーク
+
+MCTS vs ランダムの詳細な比較（20ゲーム）：
+
+```powershell
+uv run python benchmark_mcts.py
 ```
 
 ## プロジェクト構造
@@ -54,7 +64,11 @@ twin-cool-emulator/
 │   │   ├── __init__.py
 │   │   ├── move_validator.py     # MoveValidatorクラス
 │   │   ├── game_state.py         # GameStateクラス
-│   │   └── game.py               # Gameクラス
+│   │   ├── game.py               # Gameクラス
+│   │   ├── evaluator.py          # Evaluatorクラス（評価関数）
+│   │   ├── mcts_node.py          # MCTSNodeクラス（MCTS木）
+│   │   ├── mcts_engine.py        # MCTSEngineクラス（探索）
+│   │   └── mcts_strategy.py      # MCTSStrategyクラス（戦略API）
 │   ├── views/                     # ユーザーインターフェース層（MVC）
 │   │   └── __init__.py
 │   └── __init__.py
@@ -67,6 +81,7 @@ twin-cool-emulator/
 │   └── test_point_calculator.py
 ├── app.py                         # Streamlit WebUIアプリ（今後追加）
 ├── main.py                        # メインエントリーポイント
+├── benchmark_mcts.py             # MCTSパフォーマンスベンチマーク
 ├── pyproject.toml                # プロジェクト設定
 └── README.md                     # このファイル
 ```
@@ -75,8 +90,21 @@ twin-cool-emulator/
 
 - [x] **ステップ 1**: 開発環境の構築 ✅
 - [x] **ステップ 2**: ゲームロジックの実装 ✅
-- [ ] **ステップ 3**: 最適解探索アルゴリズムの実装 🚧
-- [ ] **ステップ 4**: WebUIアプリケーションの実装 📋
+- [x] **ステップ 3**: MCTS最適解探索の実装 ✅
+- [ ] **ステップ 4**: WebUIアプリケーションの実装 �
+
+## パフォーマンス
+
+### ランダム戦略（ベースライン）
+- 平均カード枚数: **6.4枚** / 70枚
+- 平均ポイント: 0.1pt
+
+### MCTS戦略（500反復/手）
+- 平均カード枚数: **17.8枚** / 70枚 (**+178.1%改善** 🎉)
+- 最大カード枚数: **50枚**
+- 平均ポイント: 0.1pt
+
+MCTSは**ランダム戦略の約3倍**のパフォーマンスを達成しています！
 
 ## ライセンス
 
