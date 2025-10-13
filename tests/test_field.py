@@ -3,23 +3,25 @@ field.pyのテスト
 """
 
 import unittest
-from src.models.field import Field, Slot
-from src.models.card import Card, Suit
+from src.models.field import Field
+from src.models.field_slot import FieldSlot
+from src.models.card import Card
+from src.models.suit import Suit
 
 
-class TestSlot(unittest.TestCase):
-    """Slotクラスのテスト"""
+class TestFieldSlot(unittest.TestCase):
+    """FieldSlotクラスのテスト"""
     
     def test_slot_initialization(self):
         """スロットの初期化テスト"""
-        slot = Slot()
+        slot = FieldSlot()
         self.assertTrue(slot.is_empty())
         self.assertEqual(slot.count(), 0)
         self.assertIsNone(slot.get_top_card())
     
     def test_slot_place_card(self):
         """カードを置くテスト"""
-        slot = Slot()
+        slot = FieldSlot()
         card = Card(Suit.SUIT_A, 5)
         slot.place_card(card)
         
@@ -29,7 +31,7 @@ class TestSlot(unittest.TestCase):
     
     def test_slot_place_multiple_cards(self):
         """複数のカードを置くテスト"""
-        slot = Slot()
+        slot = FieldSlot()
         card1 = Card(Suit.SUIT_A, 1)
         card2 = Card(Suit.SUIT_B, 2)
         card3 = Card(Suit.SUIT_C, 3)
@@ -43,7 +45,7 @@ class TestSlot(unittest.TestCase):
     
     def test_slot_get_all_cards(self):
         """全カードを取得するテスト"""
-        slot = Slot()
+        slot = FieldSlot()
         card1 = Card(Suit.SUIT_D, 4)
         card2 = Card(Suit.SUIT_E, 5)
         
@@ -116,8 +118,8 @@ class TestField(unittest.TestCase):
         slot1 = field.get_slot(1)
         slot2 = field.get_slot(2)
         
-        self.assertIsInstance(slot1, Slot)
-        self.assertIsInstance(slot2, Slot)
+        self.assertIsInstance(slot1, FieldSlot)
+        self.assertIsInstance(slot2, FieldSlot)
         self.assertIsNot(slot1, slot2)
 
 

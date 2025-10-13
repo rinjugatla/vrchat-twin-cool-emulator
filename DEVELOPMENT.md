@@ -13,11 +13,11 @@
 
 | クラス | ファイル | 説明 | テスト |
 |--------|---------|------|--------|
-| `Suit` | `src/models/card.py` | 8種類のスートを表すEnum | ✅ |
+| `Suit` | `src/models/suit.py` | 8種類のスートを表すEnum | - |
 | `Card` | `src/models/card.py` | カードクラス（スート+数値1-10） | ✅ 7テスト |
 | `Deck` | `src/models/deck.py` | 山札クラス（80枚→10枚除外→70枚） | ✅ 6テスト |
 | `Hand` | `src/models/hand.py` | 手札クラス | ✅ 7テスト |
-| `Slot` | `src/models/field.py` | スロット（カードの山）クラス | ✅ 4テスト |
+| `FieldSlot` | `src/models/field_slot.py` | スロット（カードの山）クラス | ✅ 4テスト |
 | `Field` | `src/models/field.py` | 場クラス（2つのスロット） | ✅ 6テスト |
 | `PointCalculator` | `src/models/point_calculator.py` | ポイント計算ロジック | ✅ 11テスト |
 
@@ -135,3 +135,9 @@ uv run python -m unittest tests.test_card.TestCard.test_card_creation_valid -v
 - 全30テスト追加・通過確認（総計71テスト）
 - main.pyにシミュレーションデモ追加
 - ドキュメント更新
+
+#### リファクタリング: 1クラス1ファイル原則の徹底
+- `card.py`から`Suit`を分離 → `suit.py`作成
+- `field.py`から`Slot`を分離 → `field_slot.py`作成、`FieldSlot`にリネーム
+- 全テストのインポートパス更新
+- 全70テスト通過確認

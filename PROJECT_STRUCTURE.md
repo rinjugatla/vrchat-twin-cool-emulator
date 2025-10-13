@@ -33,13 +33,18 @@ twin-cool-emulator/
 ├── src/                           # ソースコード
 │   ├── models/                    # ✅ データモデル層
 │   │   ├── __init__.py
-│   │   ├── card.py               # Card, Suit
+│   │   ├── suit.py               # Suit
+│   │   ├── card.py               # Card
 │   │   ├── deck.py               # Deck
 │   │   ├── hand.py               # Hand
-│   │   ├── field.py              # Field, Slot
+│   │   ├── field_slot.py         # FieldSlot
+│   │   ├── field.py              # Field
 │   │   └── point_calculator.py   # PointCalculator
-│   ├── controllers/               # 🚧 コントローラー層（今後実装）
-│   │   └── __init__.py
+│   ├── controllers/               # ✅ コントローラー層
+│   │   ├── __init__.py
+│   │   ├── move_validator.py     # MoveValidator
+│   │   ├── game_state.py         # GameState
+│   │   └── game.py               # Game
 │   ├── views/                     # 📋 ビュー層（今後実装）
 │   │   └── __init__.py
 │   └── __init__.py
@@ -66,11 +71,11 @@ twin-cool-emulator/
 
 | クラス | ファイルパス | 役割 | テスト数 |
 |--------|-------------|------|---------|
-| `Suit` | `src/models/card.py` | 8種類のスートEnum | - |
+| `Suit` | `src/models/suit.py` | 8種類のスートEnum | - |
 | `Card` | `src/models/card.py` | カードクラス | 7 |
 | `Deck` | `src/models/deck.py` | 山札（70枚） | 6 |
 | `Hand` | `src/models/hand.py` | 手札管理 | 7 |
-| `Slot` | `src/models/field.py` | カードの山 | 4 |
+| `FieldSlot` | `src/models/field_slot.py` | カードの山 | 4 |
 | `Field` | `src/models/field.py` | 場（2スロット） | 6 |
 | `PointCalculator` | `src/models/point_calculator.py` | ポイント計算 | 11 |
 

@@ -4,7 +4,8 @@
 
 import random
 from typing import List, Optional
-from .card import Card, Suit
+from .card import Card
+from .suit import Suit
 
 
 class Deck:

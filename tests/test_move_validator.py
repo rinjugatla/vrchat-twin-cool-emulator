@@ -4,7 +4,8 @@ move_validator.pyのテスト
 
 import unittest
 from src.controllers.move_validator import MoveValidator
-from src.models.card import Card, Suit
+from src.models.card import Card
+from src.models.suit import Suit
 from src.models.hand import Hand
 from src.models.field import Field
 

@@ -3,7 +3,8 @@ card.pyのテスト
 """
 
 import unittest
-from src.models.card import Card, Suit
+from src.models.card import Card
+from src.models.suit import Suit
 
 
 class TestCard(unittest.TestCase):

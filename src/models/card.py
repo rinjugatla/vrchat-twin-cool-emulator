@@ -1,22 +1,9 @@
 """
-カード、デッキ、手札に関するクラスとロジック
+カードクラスの定義
 """
 
 from dataclasses import dataclass
-from enum import Enum
-from typing import List, Optional
-
-
-class Suit(Enum):
-    """カードのスート（8種類）"""
-    SUIT_A = "A"
-    SUIT_B = "B"
-    SUIT_C = "C"
-    SUIT_D = "D"
-    SUIT_E = "E"
-    SUIT_F = "F"
-    SUIT_G = "G"
-    SUIT_H = "H"
+from .suit import Suit
 
 
 @dataclass(frozen=True)

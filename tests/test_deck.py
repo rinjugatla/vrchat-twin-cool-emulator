@@ -4,7 +4,8 @@ deck.pyのテスト
 
 import unittest
 from src.models.deck import Deck
-from src.models.card import Card, Suit
+from src.models.card import Card
+from src.models.suit import Suit
 
 
 class TestDeck(unittest.TestCase):

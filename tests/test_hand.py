@@ -4,7 +4,8 @@ hand.pyのテスト
 
 import unittest
 from src.models.hand import Hand
-from src.models.card import Card, Suit
+from src.models.card import Card
+from src.models.suit import Suit
 
 
 class TestHand(unittest.TestCase):

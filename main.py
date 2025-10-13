@@ -3,7 +3,7 @@ twin-cool-emulator メインエントリーポイント
 オリジナルカードゲーム「最適解探索プログラム」
 """
 
-from src.models import Card, Suit, Deck, Hand, Field, PointCalculator
+from src.models import Suit, Card, Deck, Hand, FieldSlot, Field, PointCalculator
 from src.controllers import Game, MoveValidator, GameState
 
 

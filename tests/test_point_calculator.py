@@ -4,7 +4,8 @@ point_calculator.pyのテスト
 
 import unittest
 from src.models.point_calculator import PointCalculator
-from src.models.card import Card, Suit
+from src.models.card import Card
+from src.models.suit import Suit
 
 
 class TestPointCalculator(unittest.TestCase):

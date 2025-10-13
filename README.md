@@ -43,14 +43,18 @@ twin-cool-emulator/
 ├── src/                           # ソースコード
 │   ├── models/                    # データモデル層（MVC）
 │   │   ├── __init__.py
-│   │   ├── card.py               # Card, Suitクラス
+│   │   ├── suit.py               # Suitクラス（Enum）
+│   │   ├── card.py               # Cardクラス
 │   │   ├── deck.py               # Deckクラス（山札）
 │   │   ├── hand.py               # Handクラス（手札）
-│   │   ├── field.py              # Field, Slotクラス（場）
+│   │   ├── field_slot.py         # FieldSlotクラス（スロット）
+│   │   ├── field.py              # Fieldクラス（場）
 │   │   └── point_calculator.py   # PointCalculatorクラス
 │   ├── controllers/               # ゲームロジック層（MVC）
 │   │   ├── __init__.py
-│   │   └── game.py               # Gameクラス（今後追加）
+│   │   ├── move_validator.py     # MoveValidatorクラス
+│   │   ├── game_state.py         # GameStateクラス
+│   │   └── game.py               # Gameクラス
 │   ├── views/                     # ユーザーインターフェース層（MVC）
 │   │   └── __init__.py
 │   └── __init__.py

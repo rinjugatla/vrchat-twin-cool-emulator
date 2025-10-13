@@ -1,72 +1,11 @@
 """
-場（Field）に関するクラスとロジック
+フィールドクラスの定義
 場には2つの独立したスロット（カードの山）が存在する
 """
 
-from typing import Optional, List
+from typing import Optional
 from .card import Card
-
-
-class Slot:
-    """
-    場の1つのスロット（カードの山）を表すクラス
-    """
-    
-    def __init__(self):
-        """スロットの初期化"""
-        self._cards: List[Card] = []
-    
-    def place_card(self, card: Card):
-        """
-        カードをスロットに置く（一番上に重ねる）
-        
-        Args:
-            card: 置くカード
-        """
-        self._cards.append(card)
-    
-    def get_top_card(self) -> Optional[Card]:
-        """
-        スロットの一番上のカードを取得
-        
-        Returns:
-            一番上のカード。スロットが空の場合はNone
-        """
-        if len(self._cards) > 0:
-            return self._cards[-1]
-        return None
-    
-    def is_empty(self) -> bool:
-        """
-        スロットが空かどうかを判定
-        
-        Returns:
-            空の場合True
-        """
-        return len(self._cards) == 0
-    
-    def count(self) -> int:
-        """
-        スロットに置かれたカードの枚数を返す
-        
-        Returns:
-            カードの枚数
-        """
-        return len(self._cards)
-    
-    def get_all_cards(self) -> List[Card]:
-        """
-        スロットの全カードを取得（コピー）
-        
-        Returns:
-            カードのリスト
-        """
-        return self._cards.copy()
-    
-    def __str__(self) -> str:
-        if self.is_empty():
-            return "Slot(empty)"
-        return f"Slot(top: {self.get_top_card()}, count: {self.count()})"
+from .field_slot import FieldSlot
 
 
 class Field:
@@ -76,10 +15,10 @@ class Field:
     
     def __init__(self):
         """場の初期化（2つのスロットを作成）"""
-        self._slot1 = Slot()
-        self._slot2 = Slot()
+        self._slot1 = FieldSlot()
+        self._slot2 = FieldSlot()
     
-    def get_slot(self, slot_number: int) -> Slot:
+    def get_slot(self, slot_number: int) -> FieldSlot:
         """
         指定したスロットを取得
         

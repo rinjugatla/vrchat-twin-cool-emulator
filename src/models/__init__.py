@@ -3,18 +3,20 @@ Modelsパッケージ
 ゲームのデータモデルとビジネスロジック
 """
 
-from .card import Card, Suit
+from .suit import Suit
+from .card import Card
 from .deck import Deck
 from .hand import Hand
-from .field import Field, Slot
+from .field_slot import FieldSlot
+from .field import Field
 from .point_calculator import PointCalculator
 
 __all__ = [
-    'Card',
     'Suit',
+    'Card',
     'Deck',
     'Hand',
+    'FieldSlot',
     'Field',
-    'Slot',
     'PointCalculator',
 ]
