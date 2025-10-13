@@ -146,6 +146,66 @@ class TestGameState(unittest.TestCase):
         self.assertIn("Turn", state_str)
         self.assertIn("Hand", state_str)
         self.assertIn("Field", state_str)
+    
+    def test_initialization_with_initial_hand(self):
+        """指定した初期手札でゲーム状態を初期化するテスト"""
+        # 除外カードと初期手札を指定
+        excluded = [Card(Suit.SUIT_A, i) for i in range(1, 11)]
+        initial_hand = [
+            Card(Suit.SUIT_B, 1),
+            Card(Suit.SUIT_B, 2),
+            Card(Suit.SUIT_B, 3),
+            Card(Suit.SUIT_B, 4),
+            Card(Suit.SUIT_B, 5)
+        ]
+        
+        state = GameState(seed=42, excluded_cards=excluded, initial_hand=initial_hand)
+        
+        # 初期手札が指定したものになっている
+        hand_cards = state.get_hand().get_cards()
+        self.assertEqual(len(hand_cards), 5)
+        for card in initial_hand:
+            self.assertIn(card, hand_cards)
+        
+        # 山札は70枚 - 5枚（初期手札）= 65枚
+        self.assertEqual(state.get_deck().remaining_count(), 65)
+        
+        # 指定したカードが山札に含まれていない
+        remaining_cards = state.get_deck().get_remaining_cards()
+        for card in initial_hand:
+            self.assertNotIn(card, remaining_cards)
+    
+    def test_initialization_with_invalid_initial_hand_count(self):
+        """初期手札が5枚でない場合のエラーテスト"""
+        # 4枚のみ指定
+        initial_hand = [
+            Card(Suit.SUIT_B, 1),
+            Card(Suit.SUIT_B, 2),
+            Card(Suit.SUIT_B, 3),
+            Card(Suit.SUIT_B, 4)
+        ]
+        
+        with self.assertRaises(ValueError) as context:
+            GameState(seed=42, initial_hand=initial_hand)
+        
+        self.assertIn("5枚である必要があります", str(context.exception))
+    
+    def test_initialization_with_invalid_initial_hand_card(self):
+        """初期手札に山札にないカードが含まれる場合のエラーテスト"""
+        # 除外カードと重複する手札を指定
+        excluded = [Card(Suit.SUIT_A, i) for i in range(1, 11)]
+        initial_hand = [
+            Card(Suit.SUIT_A, 1),  # 除外カードと重複
+            Card(Suit.SUIT_B, 2),
+            Card(Suit.SUIT_B, 3),
+            Card(Suit.SUIT_B, 4),
+            Card(Suit.SUIT_B, 5)
+        ]
+        
+        with self.assertRaises(ValueError) as context:
+            GameState(seed=42, excluded_cards=excluded, initial_hand=initial_hand)
+        
+        self.assertIn("山札に含まれていません", str(context.exception))
 
 
 if __name__ == '__main__':

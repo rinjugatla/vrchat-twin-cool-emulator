@@ -22,18 +22,22 @@ def initialize_session_state():
         st.session_state.recommended_move = None  # 推奨手を保存
         st.session_state.excluded_cards = []  # 除外カード選択用
         st.session_state.show_exclude_dialog = False  # 除外カード選択ダイアログ表示フラグ
+        st.session_state.initial_hand = []  # 初期手札選択用
+        st.session_state.show_hand_dialog = False  # 初期手札選択ダイアログ表示フラグ
 
 
-def reset_game(excluded_cards=None):
+def reset_game(excluded_cards=None, initial_hand=None):
     """ゲームをリセット"""
     seed = random.randint(0, 100000)
-    st.session_state.game_state = GameState(seed=seed, excluded_cards=excluded_cards)
+    st.session_state.game_state = GameState(seed=seed, excluded_cards=excluded_cards, initial_hand=initial_hand)
     st.session_state.history = []
     st.session_state.turn = 0
     st.session_state.seed = seed
     st.session_state.recommended_move = None  # 推奨手をクリア
     st.session_state.excluded_cards = []  # 除外カード選択をクリア
     st.session_state.show_exclude_dialog = False  # ダイアログを閉じる
+    st.session_state.initial_hand = []  # 初期手札選択をクリア
+    st.session_state.show_hand_dialog = False  # ダイアログを閉じる
 
 
 def display_game_state(state: GameState):
@@ -113,6 +117,82 @@ def display_field(state: GameState):
             st.caption(f"枚数: {field.get_slot_count(2)}枚")
         else:
             st.info("空（任意のカードを出せます）")
+
+
+def display_card_selection_table(
+    title: str,
+    selected_cards: Set[Card],
+    disabled_cards: Set[Card],
+    on_card_click_key_prefix: str,
+    caption: str
+) -> Set[Card]:
+    """
+    カード選択用のテーブルを表示
+    
+    Args:
+        title: テーブルのタイトル
+        selected_cards: 選択済みのカード
+        disabled_cards: 選択不可のカード
+        on_card_click_key_prefix: チェックボックスのキープレフィックス
+        caption: 凡例のキャプション
+    
+    Returns:
+        選択されたカードのセット
+    """
+    st.subheader(title)
+    
+    # HTMLテーブルを構築
+    html = '<table style="width:100%; border-collapse: collapse; text-align: center;">'
+    
+    # ヘッダー行
+    html += '<tr style="background-color: #f0f0f0;">'
+    html += '<th style="border: 1px solid #ddd; padding: 8px; color: #000000; font-weight: bold;">スート</th>'
+    for value in range(1, 11):
+        html += f'<th style="border: 1px solid #ddd; padding: 8px; color: #000000; font-weight: bold;">{value}</th>'
+    html += '</tr>'
+    
+    # 選択状態を保存するための一時変数
+    current_selected = set()
+    
+    # 各スートの行
+    suits = list(Suit)
+    for suit in suits:
+        emoji = get_suit_emoji(suit)
+        html += '<tr>'
+        html += f'<td style="border: 1px solid #ddd; padding: 8px; font-weight: bold; background-color: #f8f9fa; color: #000000;">{emoji} {suit.name}</td>'
+        html += '</tr>'
+    
+    html += '</table>'
+    
+    # テーブルを表示
+    st.markdown(html, unsafe_allow_html=True)
+    
+    # テーブルの下にチェックボックスを配置
+    st.markdown("---")
+    
+    for suit in suits:
+        emoji = get_suit_emoji(suit)
+        st.markdown(f"**{emoji} {suit.name}**")
+        cols = st.columns(10)
+        for i, value in enumerate(range(1, 11)):
+            card = Card(suit, value)
+            with cols[i]:
+                if card in disabled_cards:
+                    # 選択不可のカードは表示のみ
+                    st.markdown(f"~~{value}~~")
+                else:
+                    # チェックボックスで選択
+                    is_selected = st.checkbox(
+                        f"{value}",
+                        key=f"{on_card_click_key_prefix}_{suit.name}_{value}",
+                        value=(card in selected_cards)
+                    )
+                    if is_selected:
+                        current_selected.add(card)
+    
+    st.caption(caption)
+    
+    return current_selected
 
 
 def display_deck_status(state: GameState, recommended_card: Optional[Card] = None):
@@ -280,39 +360,82 @@ def main():
     
     # 除外カード選択ダイアログ
     if st.session_state.show_exclude_dialog:
-        st.subheader("🎯 除外するカードを10枚選択")
+        st.info("💡 山札から除外する10枚のカードを選択してください。表の下のチェックボックスで選択します。")
         
-        st.info("山札から除外する10枚のカードを選択してください。チェックボックスで選択します。")
-        
-        # 全カードを8スート×10数値で表示
-        selected_cards = []
-        
-        for suit in Suit:
-            st.markdown(f"### {get_suit_emoji(suit)} {suit.name}")
-            cols = st.columns(10)
-            for i, value in enumerate(range(1, 11)):
-                with cols[i]:
-                    card = Card(suit, value)
-                    if st.checkbox(f"{value}", key=f"exclude_{suit.name}_{value}"):
-                        selected_cards.append(card)
+        # カード選択テーブルを表示
+        selected_cards = display_card_selection_table(
+            title="🎯 ステップ1: 除外するカードを10枚選択",
+            selected_cards=set(),
+            disabled_cards=set(),
+            on_card_click_key_prefix="exclude",
+            caption="**凡例:** チェックボックスで選択 | ~~取り消し線~~=選択不可"
+        )
         
         st.markdown("---")
-        st.markdown(f"**選択中: {len(selected_cards)}/10枚**")
+        st.markdown(f"### **選択中: {len(selected_cards)}/10枚**")
+        
+        if len(selected_cards) > 10:
+            st.error(f"⚠️ 10枚まで選択できます（現在: {len(selected_cards)}枚）")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if st.button("➡️ 次へ（初期手札を選択）", use_container_width=True, type="primary", disabled=(len(selected_cards) != 10)):
+                if len(selected_cards) == 10:
+                    st.session_state.excluded_cards = list(selected_cards)
+                    st.session_state.show_exclude_dialog = False
+                    st.session_state.show_hand_dialog = True
+                    st.rerun()
+        
+        with col2:
+            if st.button("✅ ランダムな手札で開始", use_container_width=True, disabled=(len(selected_cards) != 10)):
+                if len(selected_cards) == 10:
+                    reset_game(excluded_cards=list(selected_cards))
+                    st.success("ゲームを開始しました！")
+                    st.rerun()
+        
+        with col3:
+            if st.button("❌ キャンセル", use_container_width=True):
+                st.session_state.show_exclude_dialog = False
+                st.rerun()
+        
+        st.markdown("---")
+    
+    # 初期手札選択ダイアログ
+    if st.session_state.show_hand_dialog:
+        st.info("💡 山札（70枚）から初期手札となる5枚のカードを選択してください。除外カードは~~取り消し線~~で表示されます。")
+        
+        # 除外カードを除いた残りのカードから選択
+        excluded = set(st.session_state.excluded_cards)
+        
+        # カード選択テーブルを表示
+        selected_hand = display_card_selection_table(
+            title="🎴 ステップ2: 初期手札を5枚選択",
+            selected_cards=set(),
+            disabled_cards=excluded,
+            on_card_click_key_prefix="hand",
+            caption="**凡例:** チェックボックスで選択 | ~~取り消し線~~=除外カード（選択不可）"
+        )
+        
+        st.markdown("---")
+        st.markdown(f"### **選択中: {len(selected_hand)}/5枚**")
+        
+        if len(selected_hand) > 5:
+            st.error(f"⚠️ 5枚まで選択できます（現在: {len(selected_hand)}枚）")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("✅ この設定でゲーム開始", use_container_width=True, type="primary", disabled=(len(selected_cards) != 10)):
-                if len(selected_cards) == 10:
-                    reset_game(excluded_cards=selected_cards)
+            if st.button("✅ この設定でゲーム開始", use_container_width=True, type="primary", disabled=(len(selected_hand) != 5)):
+                if len(selected_hand) == 5:
+                    reset_game(excluded_cards=st.session_state.excluded_cards, initial_hand=list(selected_hand))
                     st.success("ゲームを開始しました！")
                     st.rerun()
-                else:
-                    st.error(f"10枚選択してください（現在: {len(selected_cards)}枚）")
         
         with col2:
             if st.button("❌ キャンセル", use_container_width=True):
-                st.session_state.show_exclude_dialog = False
+                st.session_state.show_hand_dialog = False
+                st.session_state.show_exclude_dialog = True  # 除外カード選択に戻る
                 st.rerun()
         
         st.markdown("---")

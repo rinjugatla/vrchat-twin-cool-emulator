@@ -23,13 +23,15 @@ class GameState:
         turn_count: ターン数
     """
     
-    def __init__(self, seed: Optional[int] = None, excluded_cards: Optional[List[Card]] = None):
+    def __init__(self, seed: Optional[int] = None, excluded_cards: Optional[List[Card]] = None, 
+                 initial_hand: Optional[List[Card]] = None):
         """
         ゲーム状態の初期化
         
         Args:
             seed: 乱数シード（テスト用、省略可）
             excluded_cards: 除外するカードのリスト（10枚）。Noneの場合はランダムに10枚除外
+            initial_hand: 初期手札のリスト（5枚）。Noneの場合は山札からランダムに5枚配布
         """
         self.deck = Deck(seed=seed, excluded_cards=excluded_cards)
         self.hand = Hand()
@@ -38,17 +40,43 @@ class GameState:
         self.turn_count = 0
         
         # 初期手札を配布（5枚）
-        self._deal_initial_hand()
+        self._deal_initial_hand(initial_hand)
         
         # 初期手札のポイントを計算
         self._update_points()
     
-    def _deal_initial_hand(self):
-        """初期手札を配布（5枚）"""
-        for _ in range(5):
-            card = self.deck.draw()
-            if card:
-                self.hand.add_card(card)
+    def _deal_initial_hand(self, initial_hand: Optional[List[Card]] = None):
+        """
+        初期手札を配布（5枚）
+        
+        Args:
+            initial_hand: 初期手札のリスト（5枚）。Noneの場合は山札からランダムに5枚配布
+        """
+        if initial_hand is not None:
+            # 指定された手札を配布
+            if len(initial_hand) != 5:
+                raise ValueError(f"初期手札は5枚である必要があります: {len(initial_hand)}枚")
+            
+            # 指定されたカードが山札に含まれているか確認
+            remaining_cards = self.deck.get_remaining_cards()
+            for card in initial_hand:
+                if card not in remaining_cards:
+                    raise ValueError(f"初期手札のカードが山札に含まれていません: {card}")
+            
+            # 山札から指定されたカードを除去して手札に追加
+            for card in initial_hand:
+                # 山札から該当カードを探して除去
+                deck_cards = self.deck.get_remaining_cards()
+                if card in deck_cards:
+                    # 内部リストから直接削除（通常のdraw()を使わない）
+                    self.deck._cards.remove(card)
+                    self.hand.add_card(card)
+        else:
+            # ランダムに配布
+            for _ in range(5):
+                card = self.deck.draw()
+                if card:
+                    self.hand.add_card(card)
     
     def _update_points(self):
         """
