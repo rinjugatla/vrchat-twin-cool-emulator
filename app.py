@@ -19,6 +19,7 @@ def initialize_session_state():
         st.session_state.history = []
         st.session_state.turn = 0
         st.session_state.seed = seed
+        st.session_state.recommended_move = None  # 推奨手を保存
 
 
 def reset_game():
@@ -28,6 +29,7 @@ def reset_game():
     st.session_state.history = []
     st.session_state.turn = 0
     st.session_state.seed = seed
+    st.session_state.recommended_move = None  # 推奨手をクリア
 
 
 def display_game_state(state: GameState):
@@ -213,20 +215,31 @@ def main():
                 type="primary"
             )
         
+        # 分析ボタンが押された場合
         if analyze_button:
             with st.spinner(f"MCTS探索中... ({num_iterations}回反復)"):
                 best_move = get_best_move_with_mcts(state, num_iterations)
             
             if best_move is None:
                 st.error("❌ 出せるカードがありません。ゲーム終了です。")
+                st.session_state.recommended_move = None
                 st.balloons()
             else:
-                card, slot = best_move
-                
-                st.success(f"✅ **推奨: {card} をスロット{slot}に出す**")
-                
+                # 推奨手をセッション状態に保存
+                st.session_state.recommended_move = best_move
+                st.rerun()
+        
+        # 推奨手が存在する場合、表示して実行ボタンを配置
+        if st.session_state.recommended_move is not None:
+            card, slot = st.session_state.recommended_move
+            
+            st.success(f"✅ **推奨: {card} をスロット{slot}に出す**")
+            
+            col_exec1, col_exec2 = st.columns([1, 1])
+            
+            with col_exec1:
                 # 実行ボタン
-                if st.button("▶️ この手を実行", use_container_width=True):
+                if st.button("▶️ この手を実行", use_container_width=True, type="secondary"):
                     # 手を実行
                     success = state.play_card(card, slot)
                     
@@ -237,10 +250,17 @@ def main():
                             'card': str(card),
                             'slot': slot
                         })
+                        st.session_state.recommended_move = None  # 推奨手をクリア
                         st.success("✅ 手を実行しました！")
                         st.rerun()
                     else:
                         st.error("❌ 手の実行に失敗しました")
+            
+            with col_exec2:
+                # キャンセルボタン
+                if st.button("❌ キャンセル", use_container_width=True):
+                    st.session_state.recommended_move = None
+                    st.rerun()
     
     # 履歴表示
     if st.session_state.history:
