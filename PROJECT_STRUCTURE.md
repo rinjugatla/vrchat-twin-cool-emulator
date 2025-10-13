@@ -90,11 +90,30 @@ twin-cool-emulator/
 | `MoveValidator` | `src/controllers/move_validator.py` | 合法手判定 | 12 |
 | `GameState` | `src/controllers/game_state.py` | ゲーム状態管理 | 8 |
 | `Game` | `src/controllers/game.py` | ゲーム全体制御 | 10 |
+| `Evaluator` | `src/controllers/evaluator.py` | 評価関数 | 6 |
+| `MCTSNode` | `src/controllers/mcts_node.py` | MCTS木ノード | 9 |
+| `MCTSEngine` | `src/controllers/mcts_engine.py` | MCTS探索エンジン | 12 |
+| `MCTSStrategy` | `src/controllers/mcts_strategy.py` | MCTS戦略API | 16 |
 
-#### 📋 未着手 (ステップ3-4)
+#### � WebUIアプリケーション (ステップ4) ✅
 
-- ステップ3: モンテカルロ木探索（MCTS）実装
-- ステップ4: Streamlit WebUI実装
+| ファイル | 説明 | 主要機能 |
+|---------|------|---------|
+| `app.py` | Streamlit WebUIアプリケーション | ゲーム状態表示、最適解分析、山札状況表示 |
+| `WEBUI_GUIDE.md` | WebUI使用方法ドキュメント | ユーザーガイド |
+
+**WebUI主要機能**:
+- ゲーム状態の視覚化（スート絵文字付き）
+- 📊 山札状況表示（8スート×10数値の表形式）
+- リアルタイムMCTS最適解分析
+- 履歴管理（スート絵文字付き）
+
+#### 📋 全ステップ完了 ✅
+
+- ✅ ステップ1: 開発環境構築
+- ✅ ステップ2: ゲームロジック実装
+- ✅ ステップ3: モンテカルロ木探索（MCTS）実装
+- ✅ ステップ4: Streamlit WebUI実装
 
 ### 🔧 コーディング規約の遵守状況
 

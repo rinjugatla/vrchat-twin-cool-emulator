@@ -84,5 +84,18 @@ class Field:
         """
         return self._slot1.count() + self._slot2.count()
     
+    def get_all_cards(self, slot_number: int):
+        """
+        指定したスロットの全カードを取得
+        
+        Args:
+            slot_number: スロット番号（1 or 2）
+            
+        Returns:
+            カードのリスト
+        """
+        slot = self.get_slot(slot_number)
+        return slot.get_all_cards()
+    
     def __str__(self) -> str:
         return f"Field(Slot1: {self._slot1}, Slot2: {self._slot2})"

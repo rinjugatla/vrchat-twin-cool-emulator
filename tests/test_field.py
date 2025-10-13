@@ -140,6 +140,30 @@ class TestField(unittest.TestCase):
         field.place_card(2, Card(Suit.SUIT_B, 3))
         self.assertEqual(field.get_slot_count(1), 2)
         self.assertEqual(field.get_slot_count(2), 1)
+    
+    def test_get_all_cards(self):
+        """スロットの全カードを取得するテスト"""
+        field = Field()
+        
+        # カードを追加
+        card1 = Card(Suit.SUIT_A, 1)
+        card2 = Card(Suit.SUIT_A, 2)
+        card3 = Card(Suit.SUIT_B, 3)
+        
+        field.place_card(1, card1)
+        field.place_card(1, card2)
+        field.place_card(2, card3)
+        
+        # スロット1の全カード取得
+        slot1_cards = field.get_all_cards(1)
+        self.assertEqual(len(slot1_cards), 2)
+        self.assertEqual(slot1_cards[0], card1)
+        self.assertEqual(slot1_cards[1], card2)
+        
+        # スロット2の全カード取得
+        slot2_cards = field.get_all_cards(2)
+        self.assertEqual(len(slot2_cards), 1)
+        self.assertEqual(slot2_cards[0], card3)
 
 
 if __name__ == '__main__':

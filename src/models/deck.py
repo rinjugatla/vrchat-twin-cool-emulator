@@ -26,6 +26,7 @@ class Deck:
             random.seed(seed)
         
         self._cards: List[Card] = []
+        self._excluded_cards: List[Card] = []  # 除外されたカード
         self._initialize_deck()
     
     def _initialize_deck(self):
@@ -40,6 +41,7 @@ class Deck:
         random.shuffle(all_cards)
         
         # 最初の10枚を除外して、残りの70枚を山札とする
+        self._excluded_cards = all_cards[:10]  # 除外されたカードを保存
         self._cards = all_cards[10:]
         
         # さらにシャッフル
@@ -73,3 +75,21 @@ class Deck:
             空の場合True
         """
         return len(self._cards) == 0
+    
+    def get_excluded_cards(self) -> List[Card]:
+        """
+        除外されたカード（初期の10枚）を取得
+        
+        Returns:
+            除外されたカードのリスト
+        """
+        return self._excluded_cards.copy()
+    
+    def get_remaining_cards(self) -> List[Card]:
+        """
+        山札に残っているカードを取得
+        
+        Returns:
+            残っているカードのリスト
+        """
+        return self._cards.copy()

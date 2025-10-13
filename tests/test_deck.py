@@ -49,6 +49,33 @@ class TestDeck(unittest.TestCase):
         card = deck.draw()
         self.assertIsNone(card)
     
+    def test_get_excluded_cards(self):
+        """除外されたカードの取得テスト"""
+        deck = Deck(seed=42)
+        excluded = deck.get_excluded_cards()
+        
+        # 除外されたカードは10枚
+        self.assertEqual(len(excluded), 10)
+        
+        # 全てCardインスタンス
+        for card in excluded:
+            self.assertIsInstance(card, Card)
+    
+    def test_get_remaining_cards(self):
+        """山札に残っているカードの取得テスト"""
+        deck = Deck(seed=42)
+        remaining = deck.get_remaining_cards()
+        
+        # 山札には70枚
+        self.assertEqual(len(remaining), 70)
+        
+        # カードを引いても元のリストは変わらない（コピーを返す）
+        original_count = len(remaining)
+        deck.draw()
+        remaining2 = deck.get_remaining_cards()
+        self.assertEqual(len(remaining2), 69)
+        self.assertEqual(len(remaining), original_count)
+    
     def test_deck_is_empty(self):
         """デッキの空判定テスト"""
         deck = Deck(seed=42)
