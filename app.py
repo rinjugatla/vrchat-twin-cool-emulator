@@ -124,7 +124,8 @@ def display_card_selection_table(
     selected_cards: Set[Card],
     disabled_cards: Set[Card],
     on_card_click_key_prefix: str,
-    caption: str
+    caption: str,
+    max_selection: int = 10
 ) -> Set[Card]:
     """
     カード選択用のテーブルを表示
@@ -133,62 +134,116 @@ def display_card_selection_table(
         title: テーブルのタイトル
         selected_cards: 選択済みのカード
         disabled_cards: 選択不可のカード
-        on_card_click_key_prefix: チェックボックスのキープレフィックス
+        on_card_click_key_prefix: ボタンのキープレフィックス
         caption: 凡例のキャプション
+        max_selection: 最大選択数
     
     Returns:
         選択されたカードのセット
     """
     st.subheader(title)
     
-    # HTMLテーブルを構築
-    html = '<table style="width:100%; border-collapse: collapse; text-align: center;">'
+    # セッション状態にカード選択を保存するキー
+    selection_key = f"{on_card_click_key_prefix}_selected"
+    if selection_key not in st.session_state:
+        st.session_state[selection_key] = set(selected_cards)
     
-    # ヘッダー行
-    html += '<tr style="background-color: #f0f0f0;">'
-    html += '<th style="border: 1px solid #ddd; padding: 8px; color: #000000; font-weight: bold;">スート</th>'
-    for value in range(1, 11):
-        html += f'<th style="border: 1px solid #ddd; padding: 8px; color: #000000; font-weight: bold;">{value}</th>'
-    html += '</tr>'
+    current_selected = st.session_state[selection_key]
     
-    # 選択状態を保存するための一時変数
-    current_selected = set()
+    # カスタムCSSでボタンスタイルを定義
+    st.markdown("""
+    <style>
+    .card-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .card-table th {
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f0f0f0;
+        color: #000000;
+        font-weight: bold;
+    }
+    .card-table td {
+        border: 1px solid #ddd;
+        padding: 0;
+        height: 50px;
+    }
+    .card-table .suit-cell {
+        font-weight: bold;
+        background-color: #f8f9fa;
+        color: #000000;
+        padding: 10px;
+    }
+    div[data-testid="column"] > div > div > div > button {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 0;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # ヘッダー行を表示
+    header_cols = st.columns([2] + [1]*10)
+    with header_cols[0]:
+        st.markdown('<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f0f0f0; border:1px solid #ddd;">スート</div>', unsafe_allow_html=True)
+    for i, value in enumerate(range(1, 11), start=1):
+        with header_cols[i]:
+            st.markdown(f'<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f0f0f0; border:1px solid #ddd;">{value}</div>', unsafe_allow_html=True)
     
     # 各スートの行
     suits = list(Suit)
     for suit in suits:
         emoji = get_suit_emoji(suit)
-        html += '<tr>'
-        html += f'<td style="border: 1px solid #ddd; padding: 8px; font-weight: bold; background-color: #f8f9fa; color: #000000;">{emoji} {suit.name}</td>'
-        html += '</tr>'
-    
-    html += '</table>'
-    
-    # テーブルを表示
-    st.markdown(html, unsafe_allow_html=True)
-    
-    # テーブルの下にチェックボックスを配置
-    st.markdown("---")
-    
-    for suit in suits:
-        emoji = get_suit_emoji(suit)
-        st.markdown(f"**{emoji} {suit.name}**")
-        cols = st.columns(10)
-        for i, value in enumerate(range(1, 11)):
+        cols = st.columns([2] + [1]*10)
+        
+        # スート列
+        with cols[0]:
+            st.markdown(f'<div style="text-align:center; font-weight:bold; padding:10px; background-color:#f8f9fa; border:1px solid #ddd; height:50px; display:flex; align-items:center; justify-content:center;">{emoji} {suit.name}</div>', unsafe_allow_html=True)
+        
+        # 数値列（ボタン）
+        for i, value in enumerate(range(1, 11), start=1):
             card = Card(suit, value)
             with cols[i]:
                 if card in disabled_cards:
-                    # 選択不可のカードは表示のみ
-                    st.markdown(f"~~{value}~~")
+                    # 選択不可のカード（除外済み）
+                    st.markdown(f'<div style="text-align:center; padding:10px; background-color:#e0e0e0; border:1px solid #ddd; height:50px; display:flex; align-items:center; justify-content:center; color:#999;">✕</div>', unsafe_allow_html=True)
                 else:
-                    # チェックボックスで選択
-                    is_selected = st.checkbox(
-                        f"{value}",
-                        key=f"{on_card_click_key_prefix}_{suit.name}_{value}",
-                        value=(card in selected_cards)
-                    )
+                    # 選択可能なカード - ボタンとして実装
+                    is_selected = card in current_selected
+                    
+                    # 背景色を設定
                     if is_selected:
-                        current_selected.add(card)
+                        button_type = "secondary"
+                        label = f"**{value}**"
+                    else:
+                        button_type = "primary"
+                        label = str(value)
+                    
+                    # ボタンがクリックされたら選択状態をトグル
+                    if st.button(
+                        label,
+                        key=f"{on_card_click_key_prefix}_{suit.name}_{value}",
+                        use_container_width=True,
+                        type=button_type
+                    ):
+                        if card in current_selected:
+                            # 選択解除
+                            current_selected.discard(card)
+                        else:
+                            # 選択（最大数チェック）
+                            if len(current_selected) < max_selection:
+                                current_selected.add(card)
+                        
+                        # セッション状態を更新
+                        st.session_state[selection_key] = current_selected
+                        st.rerun()
     
     st.caption(caption)
     
@@ -360,7 +415,7 @@ def main():
     
     # 除外カード選択ダイアログ
     if st.session_state.show_exclude_dialog:
-        st.info("💡 山札から除外する10枚のカードを選択してください。表の下のチェックボックスで選択します。")
+        st.info("💡 山札から除外する10枚のカードを選択してください。セルをクリックして選択します。選択したセルは灰色になります。")
         
         # カード選択テーブルを表示
         selected_cards = display_card_selection_table(
@@ -368,7 +423,8 @@ def main():
             selected_cards=set(),
             disabled_cards=set(),
             on_card_click_key_prefix="exclude",
-            caption="**凡例:** チェックボックスで選択 | ~~取り消し線~~=選択不可"
+            caption="**凡例:** クリックで選択/解除 | ✕=選択不可 | 濃い色=選択済み",
+            max_selection=10
         )
         
         st.markdown("---")
@@ -385,25 +441,34 @@ def main():
                     st.session_state.excluded_cards = list(selected_cards)
                     st.session_state.show_exclude_dialog = False
                     st.session_state.show_hand_dialog = True
+                    # 除外カードの選択状態をクリア
+                    if "exclude_selected" in st.session_state:
+                        del st.session_state["exclude_selected"]
                     st.rerun()
         
         with col2:
             if st.button("✅ ランダムな手札で開始", use_container_width=True, disabled=(len(selected_cards) != 10)):
                 if len(selected_cards) == 10:
                     reset_game(excluded_cards=list(selected_cards))
+                    # 除外カードの選択状態をクリア
+                    if "exclude_selected" in st.session_state:
+                        del st.session_state["exclude_selected"]
                     st.success("ゲームを開始しました！")
                     st.rerun()
         
         with col3:
             if st.button("❌ キャンセル", use_container_width=True):
                 st.session_state.show_exclude_dialog = False
+                # 選択状態をクリア
+                if "exclude_selected" in st.session_state:
+                    del st.session_state["exclude_selected"]
                 st.rerun()
         
         st.markdown("---")
     
     # 初期手札選択ダイアログ
     if st.session_state.show_hand_dialog:
-        st.info("💡 山札（70枚）から初期手札となる5枚のカードを選択してください。除外カードは~~取り消し線~~で表示されます。")
+        st.info("💡 山札（70枚）から初期手札となる5枚のカードを選択してください。セルをクリックして選択します。除外カードは✕で表示されます。")
         
         # 除外カードを除いた残りのカードから選択
         excluded = set(st.session_state.excluded_cards)
@@ -414,7 +479,8 @@ def main():
             selected_cards=set(),
             disabled_cards=excluded,
             on_card_click_key_prefix="hand",
-            caption="**凡例:** チェックボックスで選択 | ~~取り消し線~~=除外カード（選択不可）"
+            caption="**凡例:** クリックで選択/解除 | ✕=除外カード（選択不可） | 濃い色=選択済み",
+            max_selection=5
         )
         
         st.markdown("---")
@@ -429,6 +495,9 @@ def main():
             if st.button("✅ この設定でゲーム開始", use_container_width=True, type="primary", disabled=(len(selected_hand) != 5)):
                 if len(selected_hand) == 5:
                     reset_game(excluded_cards=st.session_state.excluded_cards, initial_hand=list(selected_hand))
+                    # 手札の選択状態をクリア
+                    if "hand_selected" in st.session_state:
+                        del st.session_state["hand_selected"]
                     st.success("ゲームを開始しました！")
                     st.rerun()
         
@@ -436,6 +505,9 @@ def main():
             if st.button("❌ キャンセル", use_container_width=True):
                 st.session_state.show_hand_dialog = False
                 st.session_state.show_exclude_dialog = True  # 除外カード選択に戻る
+                # 選択状態をクリア
+                if "hand_selected" in st.session_state:
+                    del st.session_state["hand_selected"]
                 st.rerun()
         
         st.markdown("---")
