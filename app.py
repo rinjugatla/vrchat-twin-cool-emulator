@@ -69,7 +69,7 @@ def display_hand(state: GameState):
         with cols[i % 5]:
             # カードの色分け（スートごと）
             suit_colors = {
-                Suit.SUIT_A: "🔴", Suit.SUIT_B: "🟦", 
+                Suit.SUIT_A: "🔴", Suit.SUIT_B: "🔵", 
                 Suit.SUIT_C: "🟢", Suit.SUIT_D: "🟡",
                 Suit.SUIT_E: "⚪", Suit.SUIT_F: "🩵",
                 Suit.SUIT_G: "🟣", Suit.SUIT_H: "🩷"
