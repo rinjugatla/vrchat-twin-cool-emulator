@@ -32,21 +32,31 @@ uv run python -m unittest discover -s tests -p "test_*.py" -v
 
 ```
 twin-cool-emulator/
-├── src/                    # ソースコード
-│   ├── __init__.py
-│   ├── card.py            # カード、スートの定義
-│   ├── deck.py            # デッキ（山札）のロジック
-│   ├── hand.py            # 手札のロジック
-│   └── game.py            # ゲームロジック（今後追加）
-├── tests/                  # テストコード
+├── src/                           # ソースコード
+│   ├── models/                    # データモデル層（MVC）
+│   │   ├── __init__.py
+│   │   ├── card.py               # Card, Suitクラス
+│   │   ├── deck.py               # Deckクラス（山札）
+│   │   ├── hand.py               # Handクラス（手札）
+│   │   ├── field.py              # Field, Slotクラス（場）
+│   │   └── point_calculator.py   # PointCalculatorクラス
+│   ├── controllers/               # ゲームロジック層（MVC）
+│   │   ├── __init__.py
+│   │   └── game.py               # Gameクラス（今後追加）
+│   ├── views/                     # ユーザーインターフェース層（MVC）
+│   │   └── __init__.py
+│   └── __init__.py
+├── tests/                         # テストコード
 │   ├── __init__.py
 │   ├── test_card.py
 │   ├── test_deck.py
-│   └── test_hand.py
-├── app.py                  # Streamlit WebUIアプリ（今後追加）
-├── main.py                 # メインエントリーポイント
-├── pyproject.toml         # プロジェクト設定
-└── README.md              # このファイル
+│   ├── test_hand.py
+│   ├── test_field.py
+│   └── test_point_calculator.py
+├── app.py                         # Streamlit WebUIアプリ（今後追加）
+├── main.py                        # メインエントリーポイント
+├── pyproject.toml                # プロジェクト設定
+└── README.md                     # このファイル
 ```
 
 ## 開発ステップ

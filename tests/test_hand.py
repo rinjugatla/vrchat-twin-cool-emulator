@@ -3,8 +3,8 @@ hand.pyのテスト
 """
 
 import unittest
-from src.hand import Hand
-from src.card import Card, Suit
+from src.models.hand import Hand
+from src.models.card import Card, Suit
 
 
 class TestHand(unittest.TestCase):

@@ -3,8 +3,8 @@ field.pyのテスト
 """
 
 import unittest
-from src.field import Field, Slot
-from src.card import Card, Suit
+from src.models.field import Field, Slot
+from src.models.card import Card, Suit
 
 
 class TestSlot(unittest.TestCase):

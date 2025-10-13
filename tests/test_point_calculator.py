@@ -1,10 +1,10 @@
 """
-points.pyのテスト
+point_calculator.pyのテスト
 """
 
 import unittest
-from src.points import PointCalculator
-from src.card import Card, Suit
+from src.models.point_calculator import PointCalculator
+from src.models.card import Card, Suit
 
 
 class TestPointCalculator(unittest.TestCase):

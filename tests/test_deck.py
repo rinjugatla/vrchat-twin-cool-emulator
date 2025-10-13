@@ -3,8 +3,8 @@ deck.pyのテスト
 """
 
 import unittest
-from src.deck import Deck
-from src.card import Card, Suit
+from src.models.deck import Deck
+from src.models.card import Card, Suit
 
 
 class TestDeck(unittest.TestCase):
