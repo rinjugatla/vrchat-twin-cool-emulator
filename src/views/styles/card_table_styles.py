@@ -13,39 +13,43 @@ def get_card_table_styles() -> str:
     return """
     <style>
     /* カード選択テーブル全体のスタイル */
-    div[data-testid="stHorizontalBlock"] {
+    div[class*="st-key-card-selection-table"] {
+        gap: 0 !important;
+    }
+
+    div[class*="st-key-card-selection-table"] div[data-testid="stHorizontalBlock"] {
         gap: 0 !important;
         column-gap: 0 !important;
         row-gap: 0 !important;
     }
     
     /* カラムのスタイル */
-    div[data-testid="stColumn"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stColumn"] {
         padding: 0 !important;
         gap: 0 !important;
     }
     
     /* 垂直ブロックのスタイル */
-    div[data-testid="stVerticalBlock"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stVerticalBlock"] {
         gap: 0 !important;
         row-gap: 0 !important;
         column-gap: 0 !important;
     }
     
     /* 要素コンテナのスタイル */
-    div[data-testid="stElementContainer"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stElementContainer"] {
         padding: 0 !important;
         margin: 0 !important;
     }
     
     /* ボタンコンテナのスタイル */
-    div[data-testid="stButton"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stButton"] {
         padding: 0 !important;
         margin: 0 !important;
     }
     
     /* ボタン自体のスタイル */
-    div[data-testid="stButton"] > button {
+    div[class*="st-key-card-selection-table"] div[data-testid="stButton"] > button {
         width: 100% !important;
         height: 50px !important;
         border: 1px solid #ddd !important;
@@ -61,24 +65,24 @@ def get_card_table_styles() -> str:
     }
     
     /* ボタン内のマークダウンコンテナ */
-    div[data-testid="stButton"] > button > div[data-testid="stMarkdownContainer"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stButton"] > button > div[data-testid="stMarkdownContainer"] {
         padding: 0 !important;
         margin: 0 !important;
     }
     
     /* ボタン内の段落 */
-    div[data-testid="stButton"] > button > div[data-testid="stMarkdownContainer"] > p {
+    div[class*="st-key-card-selection-table"] div[data-testid="stButton"] > button > div[data-testid="stMarkdownContainer"] > p {
         padding: 0 !important;
         margin: 0 !important;
     }
     
     /* マークダウンコンテナ（スート列用） */
-    div[data-testid="stMarkdown"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stMarkdown"] {
         padding: 0 !important;
         margin: 0 !important;
     }
     
-    div[data-testid="stMarkdownContainer"] {
+    div[class*="st-key-card-selection-table"] div[data-testid="stMarkdownContainer"] {
         padding: 0 !important;
         margin: 0 !important;
     }
