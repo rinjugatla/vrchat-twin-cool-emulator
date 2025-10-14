@@ -194,12 +194,6 @@ def main():
     
     st.markdown("---")
     
-    # 山札状況の表示
-    recommended_card = st.session_state.recommended_move[0] if st.session_state.recommended_move else None
-    display_deck_status(state, recommended_card)
-    
-    st.markdown("---")
-    
     # 最適解の取得と表示
     st.subheader(" 次の最適な手")
     
@@ -288,6 +282,12 @@ def main():
                     st.session_state.recommended_move = None
                     st.session_state.strategy_explanation = None
                     st.rerun()
+    
+    st.markdown("---")
+    
+    # 山札状況の表示
+    recommended_card = st.session_state.recommended_move[0] if st.session_state.recommended_move else None
+    display_deck_status(state, recommended_card)
     
     # 履歴表示
     if st.session_state.history:
