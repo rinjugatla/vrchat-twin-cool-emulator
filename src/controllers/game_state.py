@@ -3,6 +3,7 @@
 現在のゲーム状態（手札、場、山札、ポイント）を管理する
 """
 
+import copy
 from typing import List, Optional
 from ..models.deck import Deck
 from ..models.hand import Hand
@@ -21,6 +22,7 @@ class GameState:
         field: 場
         total_points: 累積ポイント
         turn_count: ターン数
+        played_cards: 場に出したカード（IS-MCTS用）
     """
     
     def __init__(self, seed: Optional[int] = None, excluded_cards: Optional[List[Card]] = None, 
@@ -38,6 +40,7 @@ class GameState:
         self.field = Field()
         self.total_points = 0
         self.turn_count = 0
+        self.played_cards: List[Card] = []  # 場に出したカードの履歴
         
         # 初期手札を配布（5枚）
         self._deal_initial_hand(initial_hand)
@@ -113,6 +116,9 @@ class GameState:
         # カードを場に出す
         self.field.place_card(slot_number, card)
         
+        # 場に出したカードを記録
+        self.played_cards.append(card)
+        
         # 山札から1枚引く
         drawn_card = self.deck.draw()
         if drawn_card:
@@ -168,6 +174,52 @@ class GameState:
     def get_deck(self) -> Deck:
         """山札を取得"""
         return self.deck
+    
+    def get_played_cards(self) -> List[Card]:
+        """場に出したカードのリストを取得"""
+        return self.played_cards.copy()
+    
+    @staticmethod
+    def from_observable_determinization(
+        hand: Hand,
+        field: Field,
+        deck_cards: List[Card],
+        excluded_cards: List[Card],
+        total_points: int,
+        turn_count: int,
+        played_cards: Optional[List[Card]] = None
+    ) -> 'GameState':
+        """
+        観測可能状態と決定化から完全なGameStateを構築
+        IS-MCTS用の特殊コンストラクタ
+        
+        Args:
+            hand: 手札
+            field: 場
+            deck_cards: 山札のカード（順序付き）
+            excluded_cards: 除外カード10枚
+            total_points: 累積ポイント
+            turn_count: ターン数
+            played_cards: 場に出したカードの履歴
+        
+        Returns:
+            完全なGameState
+        """
+        # 新しいインスタンスを作成（__init__を呼ばない）
+        state = GameState.__new__(GameState)
+        
+        # Deckを構築
+        state.deck = Deck(excluded_cards=excluded_cards)
+        state.deck._cards = deck_cards.copy()  # 順序を保持
+        
+        # その他の属性をディープコピー
+        state.hand = copy.deepcopy(hand)
+        state.field = copy.deepcopy(field)
+        state.total_points = total_points
+        state.turn_count = turn_count
+        state.played_cards = played_cards.copy() if played_cards else []
+        
+        return state
     
     def __str__(self) -> str:
         return (
