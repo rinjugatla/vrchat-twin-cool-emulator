@@ -132,6 +132,36 @@ class GameState:
         
         return True
     
+    def add_card_to_hand(self, card: Card) -> bool:
+        """
+        指定されたカードを手札に追加する（山札から削除）
+        実際のゲームプレイでシミュレータに反映させるために使用
+        
+        Args:
+            card: 手札に追加するカード
+            
+        Returns:
+            成功した場合True、失敗した場合False
+        """
+        # カードが山札に存在するか確認
+        remaining_cards = self.deck.get_remaining_cards()
+        if card not in remaining_cards:
+            return False
+        
+        # 山札からカードを除去
+        try:
+            self.deck._cards.remove(card)
+        except ValueError:
+            return False
+        
+        # 手札に追加
+        self.hand.add_card(card)
+        
+        # ポイントを更新
+        self._update_points()
+        
+        return True
+    
     def get_cards_played_count(self) -> int:
         """
         場に出したカードの枚数を返す

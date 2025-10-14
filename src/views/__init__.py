@@ -12,7 +12,8 @@ from .components import (
 )
 from .dialogs import (
     show_exclude_card_dialog,
-    show_hand_selection_dialog
+    show_hand_selection_dialog,
+    show_add_card_dialog
 )
 from .utils import (
     get_suit_emoji,
@@ -30,6 +31,7 @@ __all__ = [
     # Dialogs
     'show_exclude_card_dialog',
     'show_hand_selection_dialog',
+    'show_add_card_dialog',
     # Utils
     'get_suit_emoji',
     'initialize_session_state',

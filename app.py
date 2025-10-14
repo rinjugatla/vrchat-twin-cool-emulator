@@ -24,7 +24,8 @@ from src.views import (
     display_field,
     display_deck_status,
     show_exclude_card_dialog,
-    show_hand_selection_dialog
+    show_hand_selection_dialog,
+    show_add_card_dialog
 )
 
 
@@ -179,6 +180,11 @@ def main():
         show_hand_selection_dialog()
         return
     
+    # 手札追加ダイアログ
+    if st.session_state.show_add_card_dialog:
+        show_add_card_dialog()
+        return
+    
     # ゲーム状態表示
     display_game_state(state)
     
@@ -258,23 +264,46 @@ def main():
             with col_exec1:
                 # 実行ボタン
                 if st.button(" この手を実行", use_container_width=True, type="secondary"):
-                    # 手を実行
-                    success = state.play_card(card, slot)
+                    # 手を実行（play_cardは自動的に山札からランダムにカードを引く）
+                    # しかし、実際のゲームでは手動でカードを選択する必要があるため、
+                    # ここではカードを出すだけにする
                     
-                    if success:
-                        st.session_state.turn += 1
-                        st.session_state.history.append({
-                            'turn': st.session_state.turn,
-                            'card': str(card),
-                            'suit': card.suit,  # スート情報も保存
-                            'slot': slot
-                        })
-                        st.session_state.recommended_move = None  # 推奨手をクリア
-                        st.session_state.strategy_explanation = None  # 説明もクリア
-                        st.success(" 手を実行しました！")
-                        st.rerun()
-                    else:
+                    # 手札にカードがあるか確認
+                    if card not in state.hand.get_cards():
                         st.error(" 手の実行に失敗しました")
+                    else:
+                        # カードを手札から削除
+                        if state.hand.remove_card(card):
+                            # カードを場に出す
+                            state.field.place_card(slot, card)
+                            
+                            # 場に出したカードを記録
+                            state.played_cards.append(card)
+                            
+                            # ポイントを更新
+                            state._update_points()
+                            
+                            # ターン数をインクリメント
+                            state.turn_count += 1
+                            
+                            st.session_state.turn += 1
+                            st.session_state.history.append({
+                                'turn': st.session_state.turn,
+                                'card': str(card),
+                                'suit': card.suit,  # スート情報も保存
+                                'slot': slot
+                            })
+                            st.session_state.recommended_move = None  # 推奨手をクリア
+                            st.session_state.strategy_explanation = None  # 説明もクリア
+                            st.success(" 手を実行しました！山札から手札にカードを追加してください。")
+                            
+                            # 山札にカードが残っている場合、手札追加ダイアログを表示
+                            if state.deck.remaining_count() > 0:
+                                st.session_state.show_add_card_dialog = True
+                            
+                            st.rerun()
+                        else:
+                            st.error(" 手の実行に失敗しました")
             
             with col_exec2:
                 # キャンセルボタン

@@ -23,6 +23,7 @@ def initialize_session_state():
         st.session_state.show_exclude_dialog = False  # 除外カード選択ダイアログ表示フラグ
         st.session_state.initial_hand = []  # 初期手札選択用
         st.session_state.show_hand_dialog = False  # 初期手札選択ダイアログ表示フラグ
+        st.session_state.show_add_card_dialog = False  # 手札追加ダイアログ表示フラグ
 
 
 def reset_game(excluded_cards: Optional[List[Card]] = None, initial_hand: Optional[List[Card]] = None):
@@ -43,3 +44,4 @@ def reset_game(excluded_cards: Optional[List[Card]] = None, initial_hand: Option
     st.session_state.show_exclude_dialog = False  # ダイアログを閉じる
     st.session_state.initial_hand = []  # 初期手札選択をクリア
     st.session_state.show_hand_dialog = False  # ダイアログを閉じる
+    st.session_state.show_add_card_dialog = False  # 手札追加ダイアログを閉じる
