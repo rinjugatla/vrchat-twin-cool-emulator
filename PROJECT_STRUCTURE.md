@@ -1,25 +1,27 @@
 # プロジェクト構造サマリー
 
-## 更新日: 2025-10-13
+## 更新日: 2025-10-14
 
 ### ✅ 完了した修正内容
 
 1. **MVCモデルに基づくフォルダ構造の実装**
-   - `src/models/` - データモデルとビジネスロジック
-   - `src/controllers/` - ゲームフロー制御（今後実装）
-   - `src/views/` - UI層（今後実装）
+   - `src/models/` - データモデルとビジネスロジック（7クラス）
+   - `src/controllers/` - ゲームフロー制御（13クラス）
+   - `src/views/` - UI層（11ファイル）
 
-2. **ファイル名とクラス名の一致**
-   - `points.py` → `point_calculator.py` にリネーム
-   - `PointCalculator`クラスと一致
+2. **4つの戦略実装**
+   - ランダム戦略（ベースライン）
+   - ヒューリスティック戦略（実用推奨）
+   - IS-MCTS戦略（不完全情報対応）
+   - MCTS戦略（完全情報、練習用）
 
-3. **全テストのインポートパス更新**
-   - `from src.card import Card` → `from src.models.card import Card`
-   - 全40テスト通過を確認 ✅
+3. **全テスト通過**
+   - 全164テスト通過を確認 ✅
 
 4. **ドキュメント整備**
    - `README.md` - プロジェクト概要とセットアップ手順
    - `DEVELOPMENT.md` - 開発状況とコーディング規約
+   - `ISMCTS_EVALUATION_REPORT.md` - IS-MCTS実装・評価レポート
    - このファイル（PROJECT_STRUCTURE.md）
 
 ### 📁 現在のディレクトリ構造
@@ -48,7 +50,15 @@ twin-cool-emulator/
 │   │   ├── evaluator.py          # Evaluator
 │   │   ├── mcts_node.py          # MCTSNode
 │   │   ├── mcts_engine.py        # MCTSEngine
-│   │   └── mcts_strategy.py      # MCTSStrategy
+│   │   ├── mcts_strategy.py      # MCTSStrategy
+│   │   ├── observable_game_state.py  # ObservableGameState
+│   │   ├── flexibility_calculator.py # FlexibilityCalculator
+│   │   ├── heuristic_strategy.py     # HeuristicStrategy
+│   │   ├── information_set.py        # InformationSet
+│   │   ├── determinizer.py           # Determinizer
+│   │   ├── ismcts_node.py            # ISMCTSNode
+│   │   ├── ismcts_engine.py          # ISMCTSEngine
+│   │   └── ismcts_strategy.py        # ISMCTSStrategy
 │   ├── views/                     # ✅ ビュー層（リファクタリング完了）
 │   │   ├── __init__.py
 │   │   ├── components/           # UIコンポーネント
@@ -101,12 +111,16 @@ twin-cool-emulator/
 | `Field` | `src/models/field.py` | 場（2スロット） | 6 |
 | `PointCalculator` | `src/models/point_calculator.py` | ポイント計算 | 11 |
 
-**ステップ1 テスト数**: 41テスト
-**ステップ2 テスト数**: 30テスト
-**WebUIリファクタリングテスト**: 11テスト
-**総テスト数**: 82テスト / 全て通過 ✅
+**ステップ1 (Models) テスト数**: 41テスト
+**ステップ2 (Game Logic) テスト数**: 30テスト
+**ステップ3 (MCTS) テスト数**: 43テスト
+**ステップ4 (WebUI) テスト数**: 1テスト
+**ステップ5 (Refactoring) テスト数**: 11テスト
+**ステップ6 (Heuristic) テスト数**: 26テスト
+**ステップ7 (IS-MCTS) テスト数**: 12テスト
+**総テスト数**: 164テスト / 全て通過 ✅
 
-#### ✅ 完了 (ステップ2)
+#### ✅ 完了 (ステップ2 & 3)
 
 | クラス | ファイルパス | 役割 | テスト数 |
 |--------|-------------|------|---------|
@@ -117,6 +131,14 @@ twin-cool-emulator/
 | `MCTSNode` | `src/controllers/mcts_node.py` | MCTS木ノード | 9 |
 | `MCTSEngine` | `src/controllers/mcts_engine.py` | MCTS探索エンジン | 12 |
 | `MCTSStrategy` | `src/controllers/mcts_strategy.py` | MCTS戦略API | 16 |
+| `ObservableGameState` | `src/controllers/observable_game_state.py` | 不完全情報状態 | 6 |
+| `FlexibilityCalculator` | `src/controllers/flexibility_calculator.py` | 柔軟性計算 | 4 |
+| `HeuristicStrategy` | `src/controllers/heuristic_strategy.py` | ヒューリスティック戦略 | 16 |
+| `InformationSet` | `src/controllers/information_set.py` | 情報セット | 6 |
+| `Determinizer` | `src/controllers/determinizer.py` | 決定化生成 | - |
+| `ISMCTSNode` | `src/controllers/ismcts_node.py` | IS-MCTSノード | - |
+| `ISMCTSEngine` | `src/controllers/ismcts_engine.py` | IS-MCTS探索エンジン | - |
+| `ISMCTSStrategy` | `src/controllers/ismcts_strategy.py` | IS-MCTS戦略API | 6 |
 
 #### 🎨 WebUIアプリケーション (ステップ4) ✅
 
@@ -142,6 +164,8 @@ twin-cool-emulator/
 - ✅ ステップ3: モンテカルロ木探索（MCTS）実装
 - ✅ ステップ4: Streamlit WebUI実装
 - ✅ ステップ5: WebUIのリファクタリング（MVCモデル適用）
+- ✅ ステップ6: ヒューリスティック戦略実装
+- ✅ ステップ7: IS-MCTS（不完全情報対応）実装
 
 #### ✅ WebUIリファクタリング完了
 
@@ -167,21 +191,28 @@ twin-cool-emulator/
 - ✅ 関数ごとのテストコード作成
 - ✅ PEP8準拠
 
-### 🎉 ステップ2完了
+### 🎉 全ステップ完了
 
-**ステップ 2: ゲームロジックの実装**が完了しました！
+**twin-cool-emulator プロジェクト完成！**
 
 実装した機能：
-- ✅ 合法手判定（同じスート or 同じ数値）
-- ✅ ゲーム状態管理（手札、場、山札、ポイント）
-- ✅ ランダムシミュレーション（ゲーム終了まで自動プレイ）
-- ✅ 統計情報収集（100回シミュレーション）
+- ✅ 完全なゲームエンジン（8スート×10数値、70枚）
+- ✅ 4つの戦略実装
+  - ランダム戦略（ベースライン）
+  - ヒューリスティック戦略（実用推奨）
+  - IS-MCTS戦略（不完全情報対応）
+  - MCTS戦略（完全情報、練習用）
+- ✅ WebUIアプリケーション（Streamlit）
+- ✅ 164個の包括的なテスト
+- ✅ 詳細な性能評価とドキュメント
 
-### 🚀 次のステップ
+### � 戦略の性能比較（200イテレーション）
 
-**ステップ 3: 最適解探索アルゴリズムの実装**
+| 戦略 | 平均カード数 | 速度 | 用途 |
+|------|-------------|------|------|
+| ランダム | 6.9枚 | ⚡⚡⚡ | ベースライン |
+| ヒューリスティック | 7.7枚 | ⚡⚡⚡ | 実用プレイ（推奨） |
+| IS-MCTS | 9.9枚 | ⚡ | 実戦・研究 |
+| MCTS（完全情報） | 25.3枚 | ⚡ | 練習・性能確認 |
 
-実装予定：
-1. モンテカルロ木探索（MCTS）の実装
-2. 状態評価関数の設計
-3. より高いスコアを達成する戦略の学習
+詳細は [ISMCTS_EVALUATION_REPORT.md](ISMCTS_EVALUATION_REPORT.md) を参照してください。
