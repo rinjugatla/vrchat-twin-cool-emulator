@@ -21,7 +21,7 @@ def show_add_card_dialog():
         disabled_cards.update(st.session_state.excluded_cards)
     
     # 手札のカード
-    for card in state.get_hand().cards:
+    for card in state.get_hand().get_cards():
         disabled_cards.add(card)
     
     # 場に出したカード
