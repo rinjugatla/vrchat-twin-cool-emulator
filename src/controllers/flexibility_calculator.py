@@ -8,6 +8,7 @@ from typing import List, Dict, Tuple
 from ..models.card import Card
 from ..models.hand import Hand
 from ..models.field import Field
+from ..models.suit import Suit
 
 
 class FlexibilityCalculator:
@@ -36,6 +37,9 @@ class FlexibilityCalculator:
         Returns:
             柔軟性スコア（接続可能なカードの数）
         """
+        if not unknown_cards:  # エッジケース: 未知カードが0枚
+            return 0
+        
         compatible_count = 0
         
         for unknown_card in unknown_cards:
@@ -64,7 +68,11 @@ class FlexibilityCalculator:
         unknown_cards: List[Card]
     ) -> Dict[Card, int]:
         """
-        手札全体の柔軟性スコアを計算
+        手札全体の柔軟性スコアを計算（最適化版）
+        
+        最適化:
+        - 未知カードをスートと数値でインデックス化
+        - O(n*m) -> O(n+m) に改善
         
         Args:
             hand: 手札
@@ -73,11 +81,28 @@ class FlexibilityCalculator:
         Returns:
             カード -> 柔軟性スコア のマップ
         """
+        if not unknown_cards:
+            return {card: 0 for card in hand.get_cards()}
+        
+        # 未知カードをスートと数値でインデックス化
+        by_suit: Dict[Suit, int] = {}
+        by_value: Dict[int, int] = {}
+        
+        for card in unknown_cards:
+            by_suit[card.suit] = by_suit.get(card.suit, 0) + 1
+            by_value[card.value] = by_value.get(card.value, 0) + 1
+        
+        # 各手札カードのスコアを計算
         scores = {}
         for card in hand.get_cards():
-            scores[card] = FlexibilityCalculator.calculate_flexibility_score(
-                card, unknown_cards
-            )
+            # 同じスートのカード数
+            suit_count = by_suit.get(card.suit, 0)
+            # 同じ数値のカード数
+            value_count = by_value.get(card.value, 0)
+            
+            # 合計（重複は自然に排除される）
+            scores[card] = suit_count + value_count
+        
         return scores
     
     @staticmethod

@@ -72,7 +72,15 @@ class HeuristicStrategy:
         
         # 残った手札の柔軟性が最も高くなる手を選択
         # = 柔軟性が低いカードを出す
-        best_move = max(move_scores, key=lambda x: x[2])
+        max_remaining_flex = max(move_scores, key=lambda x: x[2])[2]
+        best_moves = [m for m in move_scores if m[2] == max_remaining_flex]
+        
+        # 同点の場合、出すカード自身の柔軟性が最も低いものを選ぶ
+        if len(best_moves) > 1:
+            best_move = min(best_moves, key=lambda x: x[3])
+        else:
+            best_move = best_moves[0]
+        
         best_card, best_slot, remaining_flex, card_flex = best_move
         
         # 説明文を生成
