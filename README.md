@@ -46,6 +46,18 @@ uv run python main.py
 
 ### 4. パフォーマンスベンチマーク
 
+ヒューリスティック戦略のベンチマーク（100ゲーム）：
+
+```powershell
+uv run python benchmark_heuristic.py
+```
+
+ランダム戦略のベンチマーク（100ゲーム、比較用）：
+
+```powershell
+uv run python benchmark_random.py
+```
+
 MCTS vs ランダムの詳細な比較（20ゲーム）：
 
 ```powershell
@@ -74,7 +86,10 @@ twin-cool-emulator/
 │   │   ├── evaluator.py          # Evaluatorクラス（評価関数）
 │   │   ├── mcts_node.py          # MCTSNodeクラス（MCTS木）
 │   │   ├── mcts_engine.py        # MCTSEngineクラス（探索）
-│   │   └── mcts_strategy.py      # MCTSStrategyクラス（戦略API）
+│   │   ├── mcts_strategy.py      # MCTSStrategyクラス（戦略API）
+│   │   ├── observable_game_state.py  # ObservableGameStateクラス（不完全情報）
+│   │   ├── flexibility_calculator.py # FlexibilityCalculatorクラス
+│   │   └── heuristic_strategy.py     # HeuristicStrategyクラス（高速戦略）
 │   ├── views/                     # ユーザーインターフェース層（MVC）✅
 │   │   ├── __init__.py
 │   │   ├── components/           # UIコンポーネント
@@ -127,23 +142,39 @@ uv run streamlit run app.py
   - ランダムゲーム開始と完全指定ゲーム開始の両方に対応
   - 2ステップで設定: ①除外カード10枚 → ②初期手札5枚
   - 特定のシナリオをテストしたり、戦略を検証できる
-- **最適解の分析**: MCTSアルゴリズムによる最適な手の提案
+- **🎲 戦略選択**: 2つの戦略から選択可能
+  - **ヒューリスティック戦略（高速）**: 即座に結果表示（推奨）
+  - **MCTS戦略（精密）**: より精密な解を探索（時間がかかる）
+- **📝 戦略の説明**: ヒューリスティック戦略では、なぜそのカードを選んだかの詳細な説明を表示
 - **履歴表示**: プレイ履歴の確認（スート絵文字付き）
 
 詳細は [WEBUI_GUIDE.md](WEBUI_GUIDE.md) を参照してください。
 
 ## パフォーマンス
 
+詳細な評価結果は [PERFORMANCE_EVALUATION.md](PERFORMANCE_EVALUATION.md) を参照してください。
+
 ### ランダム戦略（ベースライン）
-- 平均カード枚数: **6.4枚** / 70枚
-- 平均ポイント: 0.1pt
+
+- 平均カード枚数: **6.47枚** / 70枚
+- 平均ポイント: 0.00pt
+- 実行時間: <0.001秒/ゲーム
+
+### ヒューリスティック戦略（推奨）⚡
+
+- 平均カード枚数: **7.70枚** / 70枚 (**+19.0%改善** 🎯)
+- 最大カード枚数: **48枚**
+- 平均ポイント: 0.04pt
+- 実行時間: 0.0018秒/ゲーム（**MCTS戦略の1000倍以上高速**）
 
 ### MCTS戦略（500反復/手）
+
 - 平均カード枚数: **17.8枚** / 70枚 (**+178.1%改善** 🎉)
 - 最大カード枚数: **50枚**
 - 平均ポイント: 0.1pt
+- 実行時間: 1-30秒/ゲーム
 
-MCTSは**ランダム戦略の約3倍**のパフォーマンスを達成しています！
+**推奨事項**: WebUIでは、リアルタイム性を重視してヒューリスティック戦略をデフォルトとして使用し、より精密な解を求める場合はMCTS戦略を選択可能にしています。
 
 ## ライセンス
 
