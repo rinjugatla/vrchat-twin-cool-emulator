@@ -61,6 +61,8 @@ def show_add_card_dialog():
                     # 選択状態をクリア
                     if "add_card_selected" in st.session_state:
                         del st.session_state["add_card_selected"]
+                    # 自動計算フラグを立てる
+                    st.session_state.auto_calculate_next_move = True
                     st.success(f"✅ {selected_card} を手札に追加しました！")
                     st.rerun()
                 else:

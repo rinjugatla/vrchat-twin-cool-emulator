@@ -121,6 +121,21 @@ def main():
         else:
             num_iterations = 500  # デフォルト値
         
+        # 戦略変更を検出して自動再計算
+        strategy_changed = False
+        if 'prev_strategy_type' not in st.session_state:
+            st.session_state.prev_strategy_type = strategy_type
+            st.session_state.prev_num_iterations = num_iterations
+        else:
+            if (st.session_state.prev_strategy_type != strategy_type or 
+                st.session_state.prev_num_iterations != num_iterations):
+                strategy_changed = True
+                st.session_state.prev_strategy_type = strategy_type
+                st.session_state.prev_num_iterations = num_iterations
+                # 既存の推奨手をクリア（戦略が変わったので再計算が必要）
+                st.session_state.recommended_move = None
+                st.session_state.strategy_explanation = None
+        
         st.markdown("---")
         
         # ゲーム情報
@@ -207,6 +222,16 @@ def main():
         st.warning(" 手札がありません。ゲーム終了です。")
         st.balloons()
     else:
+        # 自動計算フラグのチェック
+        auto_calculate = False
+        if hasattr(st.session_state, 'auto_calculate_next_move') and st.session_state.auto_calculate_next_move:
+            auto_calculate = True
+            st.session_state.auto_calculate_next_move = False  # フラグをクリア
+        
+        # 戦略変更時も自動計算
+        if strategy_changed:
+            auto_calculate = True
+        
         col1, col2 = st.columns([3, 1])
         
         with col2:
@@ -216,8 +241,15 @@ def main():
                 type="primary"
             )
         
-        # 分析ボタンが押された場合
-        if analyze_button:
+        # 分析ボタンが押された場合、または自動計算フラグが立っている場合
+        if analyze_button or auto_calculate:
+            # 自動計算の場合はメッセージを表示
+            if auto_calculate and not analyze_button:
+                if strategy_changed:
+                    st.info("🔄 戦略が変更されました。最適解を再計算中...")
+                else:
+                    st.info("🎯 手札が更新されました。次の最適解を自動計算中...")
+            
             if strategy_type == "ヒューリスティック（高速）":
                 # ヒューリスティック戦略
                 best_move, explanation = get_best_move_with_heuristic(state)

@@ -434,3 +434,13 @@ uv run python -m unittest tests.test_card.TestCard.test_card_creation_valid -v
 - ベンチマークスクリプト作成（benchmark_heuristic.py, benchmark_random.py）
 - 性能評価レポート作成（PERFORMANCE_EVALUATION.md）
 - ドキュメント更新（README.md, WEBUI_GUIDE.md, DEVELOPMENT.md）
+
+#### WebUI改善: 自動最適解計算機能
+
+- **手札追加後の自動計算**: 手札を場に出し、山札からカードを追加すると自動的に次の最適解を計算
+- **戦略変更時の即座再計算**: 戦略を変更（ヒューリスティック⇔MCTS、または探索回数変更）すると自動的に再計算
+- **変更箇所**:
+  - `app.py`: 戦略変更検出ロジック追加、自動計算フラグ処理追加
+  - `src/views/dialogs/add_card_dialog.py`: 手札追加後に自動計算フラグを設定
+- **ユーザビリティ向上**: 毎回「最適解を分析」ボタンを押す手間を削減
+- ドキュメント更新（WEBUI_GUIDE.md, DEVELOPMENT.md）
