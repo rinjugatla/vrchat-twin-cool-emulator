@@ -6,10 +6,15 @@ twin-cool-emulator Streamlit WebUIアプリケーション
 """
 
 import streamlit as st
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 from src.models import Card
-from src.controllers import GameState, MCTSStrategy
+from src.controllers import (
+    GameState, 
+    MCTSStrategy,
+    HeuristicStrategy,
+    ObservableGameState
+)
 from src.views import (
     initialize_session_state,
     reset_game,
@@ -23,10 +28,53 @@ from src.views import (
 )
 
 
+def get_played_cards_from_history() -> List[Card]:
+    """履歴から既に場に出したカードのリストを生成"""
+    played_cards = []
+    if 'history' in st.session_state and st.session_state.history:
+        for record in st.session_state.history:
+            # 履歴からカードを復元
+            # record['card']は文字列（例: "A5"）
+            card_str = record['card']
+            suit = record.get('suit')  # スート情報がある場合
+            
+            if suit:
+                # スートと数値を分離
+                value_str = card_str[1:]  # 最初の1文字（スート）を除いた数値部分
+                try:
+                    value = int(value_str)
+                    played_cards.append(Card(suit, value))
+                except (ValueError, KeyError):
+                    pass  # パースエラーは無視
+    
+    return played_cards
+
+
 def get_best_move_with_mcts(state: GameState, num_iterations: int) -> Optional[Tuple[Card, int]]:
     """MCTSを使って最適な手を取得"""
     strategy = MCTSStrategy(num_iterations=num_iterations, verbose=False)
     return strategy.get_best_move(state)
+
+
+def get_best_move_with_heuristic(state: GameState) -> Tuple[Optional[Tuple[Card, int]], str]:
+    """
+    ヒューリスティック戦略で最適な手を取得
+    
+    Returns:
+        (最適な手, 説明文)
+    """
+    # 既出カードを取得
+    played_cards = get_played_cards_from_history()
+    
+    # ObservableGameStateを構築
+    obs_state = ObservableGameState.from_game_state(state, played_cards)
+    
+    # ヒューリスティック戦略で手を選択
+    strategy = HeuristicStrategy(verbose=False)
+    best_move = strategy.get_best_move(obs_state)
+    explanation = strategy.explain()
+    
+    return best_move, explanation
 
 
 def main():
@@ -48,15 +96,29 @@ def main():
     with st.sidebar:
         st.header(" 設定")
         
-        # MCTS設定
-        num_iterations = st.slider(
-            "MCTS探索回数",
-            min_value=50,
-            max_value=2000,
-            value=500,
-            step=50,
-            help="探索回数を増やすと精度が上がりますが、時間がかかります"
+        # 戦略選択
+        st.subheader(" 戦略選択")
+        strategy_type = st.radio(
+            "使用する戦略",
+            ["ヒューリスティック（高速）", "MCTS（精密）"],
+            index=0,
+            help="ヒューリスティック: 瞬時に判断、説明可能\nMCTS: 数秒かかるが高精度"
         )
+        
+        st.markdown("---")
+        
+        # MCTS設定（MCTS選択時のみ表示）
+        if strategy_type == "MCTS（精密）":
+            num_iterations = st.slider(
+                "MCTS探索回数",
+                min_value=50,
+                max_value=2000,
+                value=500,
+                step=50,
+                help="探索回数を増やすと精度が上がりますが、時間がかかります"
+            )
+        else:
+            num_iterations = 500  # デフォルト値
         
         st.markdown("---")
         
@@ -156,23 +218,46 @@ def main():
         
         # 分析ボタンが押された場合
         if analyze_button:
-            with st.spinner(f"MCTS探索中... ({num_iterations}回反復)"):
-                best_move = get_best_move_with_mcts(state, num_iterations)
-            
-            if best_move is None:
-                st.error(" 出せるカードがありません。ゲーム終了です。")
-                st.session_state.recommended_move = None
-                st.balloons()
+            if strategy_type == "ヒューリスティック（高速）":
+                # ヒューリスティック戦略
+                best_move, explanation = get_best_move_with_heuristic(state)
+                
+                if best_move is None:
+                    st.error(" 出せるカードがありません。ゲーム終了です。")
+                    st.session_state.recommended_move = None
+                    st.session_state.strategy_explanation = explanation
+                    st.balloons()
+                else:
+                    # 推奨手と説明をセッション状態に保存
+                    st.session_state.recommended_move = best_move
+                    st.session_state.strategy_explanation = explanation
+                    st.rerun()
             else:
-                # 推奨手をセッション状態に保存
-                st.session_state.recommended_move = best_move
-                st.rerun()
+                # MCTS戦略
+                with st.spinner(f"MCTS探索中... ({num_iterations}回反復)"):
+                    best_move = get_best_move_with_mcts(state, num_iterations)
+                
+                if best_move is None:
+                    st.error(" 出せるカードがありません。ゲーム終了です。")
+                    st.session_state.recommended_move = None
+                    st.session_state.strategy_explanation = None
+                    st.balloons()
+                else:
+                    # 推奨手をセッション状態に保存
+                    st.session_state.recommended_move = best_move
+                    st.session_state.strategy_explanation = None
+                    st.rerun()
         
         # 推奨手が存在する場合、表示して実行ボタンを配置
         if st.session_state.recommended_move is not None:
             card, slot = st.session_state.recommended_move
             
             st.success(f" **推奨: {card} をスロット{slot}に出す**")
+            
+            # ヒューリスティック戦略の説明を表示
+            if hasattr(st.session_state, 'strategy_explanation') and st.session_state.strategy_explanation:
+                with st.expander(" 戦略の説明", expanded=True):
+                    st.text(st.session_state.strategy_explanation)
             
             col_exec1, col_exec2 = st.columns([1, 1])
             
@@ -191,6 +276,7 @@ def main():
                             'slot': slot
                         })
                         st.session_state.recommended_move = None  # 推奨手をクリア
+                        st.session_state.strategy_explanation = None  # 説明もクリア
                         st.success(" 手を実行しました！")
                         st.rerun()
                     else:
@@ -200,6 +286,7 @@ def main():
                 # キャンセルボタン
                 if st.button(" キャンセル", use_container_width=True):
                     st.session_state.recommended_move = None
+                    st.session_state.strategy_explanation = None
                     st.rerun()
     
     # 履歴表示
