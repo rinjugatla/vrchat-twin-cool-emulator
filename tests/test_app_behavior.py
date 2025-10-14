@@ -114,7 +114,8 @@ class TestAppBehavior(unittest.TestCase):
             self.assertEqual(len(mock_session_state['history']), 0)
             self.assertEqual(mock_session_state['turn'], 0)
             self.assertIsNone(mock_session_state['recommended_move'])
-            self.assertEqual(len(mock_session_state['excluded_cards']), 0)
+            # 除外カードは実際に除外された10枚が保存される
+            self.assertEqual(len(mock_session_state['excluded_cards']), 10)
             self.assertFalse(mock_session_state['show_exclude_dialog'])
             self.assertEqual(len(mock_session_state['initial_hand']), 0)
             self.assertFalse(mock_session_state['show_hand_dialog'])

@@ -19,7 +19,8 @@ def initialize_session_state():
         st.session_state.turn = 0
         st.session_state.seed = seed
         st.session_state.recommended_move = None  # 推奨手を保存
-        st.session_state.excluded_cards = []  # 除外カード選択用
+        # ゲーム初期化後、実際に除外されたカードを取得して保存
+        st.session_state.excluded_cards = st.session_state.game_state.deck.get_excluded_cards()
         st.session_state.show_exclude_dialog = False  # 除外カード選択ダイアログ表示フラグ
         st.session_state.initial_hand = []  # 初期手札選択用
         st.session_state.show_hand_dialog = False  # 初期手札選択ダイアログ表示フラグ
@@ -40,7 +41,8 @@ def reset_game(excluded_cards: Optional[List[Card]] = None, initial_hand: Option
     st.session_state.turn = 0
     st.session_state.seed = seed
     st.session_state.recommended_move = None  # 推奨手をクリア
-    st.session_state.excluded_cards = []  # 除外カード選択をクリア
+    # ゲームリセット後、実際に除外されたカードを取得して保存
+    st.session_state.excluded_cards = st.session_state.game_state.deck.get_excluded_cards()
     st.session_state.show_exclude_dialog = False  # ダイアログを閉じる
     st.session_state.initial_hand = []  # 初期手札選択をクリア
     st.session_state.show_hand_dialog = False  # ダイアログを閉じる
