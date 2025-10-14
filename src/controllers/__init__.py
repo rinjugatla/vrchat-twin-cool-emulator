@@ -10,6 +10,9 @@ from .evaluator import Evaluator
 from .mcts_node import MCTSNode
 from .mcts_engine import MCTSEngine
 from .mcts_strategy import MCTSStrategy
+from .observable_game_state import ObservableGameState
+from .flexibility_calculator import FlexibilityCalculator
+from .heuristic_strategy import HeuristicStrategy
 
 __all__ = [
     'MoveValidator',
@@ -19,4 +22,7 @@ __all__ = [
     'MCTSNode',
     'MCTSEngine',
     'MCTSStrategy',
+    'ObservableGameState',
+    'FlexibilityCalculator',
+    'HeuristicStrategy',
 ]
