@@ -1,8 +1,8 @@
-# IS-MCTS 実装・評価レポート
+# IS-MCTS実装・評価レポート
 
-**実装日**: 2025年10月14日  
-**プロジェクト**: twin-cool-emulator  
-**実装者**: AI Programming Assistant
+**日付**: 2025年10月14日  
+**プロジェクト**: vrchat-twin-cool-emulator  
+**対象**: Information Set Monte Carlo Tree Search（IS-MCTS）戦略
 
 ---
 

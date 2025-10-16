@@ -1,6 +1,6 @@
 # 🎉 プロジェクト完成サマリー
 
-## twin-cool-emulator
+## vrchat-twin-cool-emulator
 
 **VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ** - 全4ステップ完了！
 
@@ -348,7 +348,7 @@ twin-cool-emulator/
 
 **開発完了日**: 2025年10月14日
 **開発者**: GitHub Copilot
-**プロジェクト**: twin-cool-emulator
+**プロジェクト**: vrchat-twin-cool-emulator
 **ライセンス**: (ライセンスを追加する場合はここに記載)
 
 🎮 **楽しいゲームライフを！** 🎴

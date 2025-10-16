@@ -1,5 +1,5 @@
 [project]
-name = "twin-cool-emulator"
+name = "vrchat-twin-cool-emulator"
 version = "0.1.0"
 description = "VRChat「MedalGameWorld」ワールドのカードゲームシミュレーションとWebUIアプリケーション"
 readme = "README.md"

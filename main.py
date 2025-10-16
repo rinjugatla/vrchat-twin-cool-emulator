@@ -1,5 +1,5 @@
 """
-twin-cool-emulator メインエントリーポイント
+vrchat-twin-cool-emulator メインエントリーポイント
 VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ
 """
 
@@ -153,7 +153,7 @@ def run_strategy_comparison(num_games: int = 10):
 def main():
     """メイン関数"""
     print("=" * 60)
-    print("twin-cool-emulator - VRChat「MedalGameWorld」エミュレータ")
+    print("vrchat-twin-cool-emulator - VRChat「MedalGameWorld」エミュレータ")
     print("=" * 60)
     print()
     

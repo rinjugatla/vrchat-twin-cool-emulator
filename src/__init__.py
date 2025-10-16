@@ -1,5 +1,5 @@
 """
-twin-cool-emulator パッケージ
+vrchat-twin-cool-emulator パッケージ
 VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ
 """
 

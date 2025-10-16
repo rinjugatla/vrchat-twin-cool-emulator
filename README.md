@@ -1,4 +1,4 @@
-# twin-cool-emulator
+# vrchat-twin-cool-emulator
 
 VRChat内の「MedalGameWorld」ワールドに実装されたカードゲームのシミュレーションとWebUIアプリケーション
 
@@ -73,7 +73,7 @@ uv run python benchmark_ismcts.py
 ## プロジェクト構造
 
 ```
-twin-cool-emulator/
+vrchat-twin-cool-emulator/
 ├── src/                           # ソースコード
 │   ├── models/                    # データモデル層（MVC）
 │   │   ├── __init__.py

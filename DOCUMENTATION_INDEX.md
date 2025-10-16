@@ -1,6 +1,6 @@
 # ドキュメント索引
 
-**twin-cool-emulator** プロジェクトの全ドキュメント一覧
+**vrchat-twin-cool-emulator** プロジェクトの全ドキュメント一覧
 
 ---
 
@@ -172,5 +172,5 @@ uv run python tests/test_app_behavior.py
 
 ---
 
-**twin-cool-emulator** - VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ  
+**vrchat-twin-cool-emulator** - VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ  
 プロジェクト完成

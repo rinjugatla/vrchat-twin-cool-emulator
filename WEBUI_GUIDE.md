@@ -334,6 +334,6 @@ WebUI上部に表示される統計：
 
 ---
 
-**開発**: twin-cool-emulator
+**開発**: vrchat-twin-cool-emulator
 **アルゴリズム**: Monte Carlo Tree Search (MCTS)
 **フレームワーク**: Streamlit

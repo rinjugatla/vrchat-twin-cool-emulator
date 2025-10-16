@@ -27,7 +27,7 @@
 ### 📁 現在のディレクトリ構造
 
 ```
-twin-cool-emulator/
+vrchat-twin-cool-emulator/
 ├── .git/                          # Gitリポジトリ
 ├── .github/                       # GitHub設定
 │   └── copilot-instructions.md   # 開発プロンプト
@@ -197,7 +197,7 @@ twin-cool-emulator/
 
 ### 🎉 全ステップ完了
 
-**twin-cool-emulator プロジェクト完成！**
+**vrchat-twin-cool-emulator プロジェクト完成！**
 
 実装した機能：
 - ✅ 完全なゲームエンジン（8スート×10数値、70枚）

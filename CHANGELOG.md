@@ -235,7 +235,7 @@
 
 ## プロジェクト概要
 
-**プロジェクト名**: twin-cool-emulator
+**プロジェクト名**: vrchat-twin-cool-emulator
 **目的**: VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ
 
 ### 技術スタック

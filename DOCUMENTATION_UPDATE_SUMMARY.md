@@ -210,3 +210,39 @@ WebUIの自動計算機能を恒久的に記録するため、5つのドキュ�
 ### 目的
 
 このエミュレータはオリジナルゲームではなく、VRChat内の既存の「MedalGameWorld」ワールドに実装されたカードゲームを再現したものであることを明確にしました。
+
+---
+
+## 📌 [2025-10-16] プロジェクト名称の変更
+
+### 更新内容
+
+プロジェクト名を`twin-cool-emulator`から`vrchat-twin-cool-emulator`に変更しました。
+
+**変更前**: twin-cool-emulator  
+**変更後**: vrchat-twin-cool-emulator
+
+### 更新されたファイル
+
+1. **README.md** - プロジェクトタイトルとディレクトリ構造
+2. **SUMMARY.md** - プロジェクト名とディレクトリ構造
+3. **.github/copilot-instructions.md** - プロジェクト名
+4. **src/__init__.py** - パッケージ名
+5. **pyproject.toml** - パッケージ名
+6. **main.py** - docstringと表示メッセージ
+7. **app.py** - docstringとpage_title、タイトル表示
+8. **WEBUI_GUIDE.md** - プロジェクト名
+9. **PROJECT_STRUCTURE.md** - ディレクトリ構造とプロジェクト名
+10. **PERFORMANCE_EVALUATION.md** - プロジェクト名
+11. **ISMCTS_EVALUATION_REPORT.md** - プロジェクト名
+12. **DOCUMENTATION_INDEX.md** - プロジェクト名
+13. **CHANGELOG.md** - プロジェクト名
+
+### 目的
+
+VRChat関連のプロジェクトであることを名称で明確にし、プロジェクトの識別性を向上させました。
+
+---
+
+**vrchat-twin-cool-emulator** - VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ  
+🎮 楽しいゲームライフを！ 🎴

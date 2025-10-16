@@ -1,5 +1,5 @@
 ﻿"""
-twin-cool-emulator Streamlit WebUIアプリケーション
+vrchat-twin-cool-emulator Streamlit WebUIアプリケーション
 VRChat「MedalGameWorld」ワールドのカードゲームの最適解を提示
 
 リファクタリング版: MVCモデルに基づく分割構造
@@ -81,12 +81,12 @@ def get_best_move_with_heuristic(state: GameState) -> Tuple[Optional[Tuple[Card,
 def main():
     """メイン関数"""
     st.page_config(
-        page_title="twin-cool-emulator",
+        page_title="vrchat-twin-cool-emulator",
         page_icon="",
         layout="wide"
     )
     
-    st.title(" twin-cool-emulator")
+    st.title(" vrchat-twin-cool-emulator")
     st.markdown("**VRChat「MedalGameWorld」カードゲームエミュレータ**")
     st.markdown("---")
     
