@@ -80,13 +80,13 @@ def get_best_move_with_heuristic(state: GameState) -> Tuple[Optional[Tuple[Card,
 
 def main():
     """メイン関数"""
-    st.page_config(
+    st.set_page_config(
         page_title="vrchat-twin-cool-emulator",
-        page_icon="",
+        page_icon="🃏",
         layout="wide"
     )
     
-    st.title(" vrchat-twin-cool-emulator")
+    st.title("🃏 vrchat-twin-cool-emulator")
     st.markdown("**VRChat「MedalGameWorld」カードゲームエミュレータ**")
     st.markdown("---")
     
