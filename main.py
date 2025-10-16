@@ -1,6 +1,6 @@
 """
 twin-cool-emulator メインエントリーポイント
-オリジナルカードゲーム「最適解探索プログラム」
+VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ
 """
 
 from src.models import Suit, Card, Deck, Hand, FieldSlot, Field, PointCalculator
@@ -153,7 +153,7 @@ def run_strategy_comparison(num_games: int = 10):
 def main():
     """メイン関数"""
     print("=" * 60)
-    print("twin-cool-emulator - オリジナルカードゲーム最適解探索")
+    print("twin-cool-emulator - VRChat「MedalGameWorld」エミュレータ")
     print("=" * 60)
     print()
     

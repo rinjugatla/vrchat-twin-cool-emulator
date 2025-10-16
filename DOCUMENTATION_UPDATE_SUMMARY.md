@@ -183,3 +183,30 @@ WebUIの自動計算機能を恒久的に記録するため、5つのドキュ�
 - WebUIで実際に自動計算機能を体験
 - 必要に応じてドキュメントを改善
 - 新機能の追加時も同様の手順でドキュメントを更新
+
+---
+
+## 📌 [2025-10-16] VRChatワールド情報の修正
+
+### 更新内容
+
+プロジェクトの正確な情報に修正しました。
+
+**変更前**: オリジナルカードゲーム「最適解探索プログラム」  
+**変更後**: VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ
+
+### 更新されたファイル
+
+1. **README.md** - プロジェクトタイトルと概要
+2. **SUMMARY.md** - プロジェクトサマリータイトル
+3. **.github/copilot-instructions.md** - 開発プロンプト
+4. **src/__init__.py** - パッケージdocstring
+5. **main.py** - ファイルdocstringとメイン関数の表示
+6. **app.py** - WebUI docstringとタイトル
+7. **pyproject.toml** - プロジェクトdescription
+8. **DOCUMENTATION_INDEX.md** - プロジェクト名
+9. **CHANGELOG.md** - プロジェクト概要
+
+### 目的
+
+このエミュレータはオリジナルゲームではなく、VRChat内の既存の「MedalGameWorld」ワールドに実装されたカードゲームを再現したものであることを明確にしました。

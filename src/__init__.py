@@ -1,6 +1,6 @@
 """
 twin-cool-emulator パッケージ
-オリジナルカードゲーム「最適解探索プログラム」
+VRChat「MedalGameWorld」ワールドのカードゲームエミュレータ
 """
 
 __version__ = "0.1.0"

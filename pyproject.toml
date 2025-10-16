@@ -1,7 +1,7 @@
 [project]
 name = "twin-cool-emulator"
 version = "0.1.0"
-description = "オリジナルカードゲーム「最適解探索プログラム」のシミュレーションとWebUIアプリケーション"
+description = "VRChat「MedalGameWorld」ワールドのカードゲームシミュレーションとWebUIアプリケーション"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
